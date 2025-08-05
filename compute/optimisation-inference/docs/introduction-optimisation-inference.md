@@ -31,6 +31,48 @@
 10. [Références](#10-références) 
 
 
+## 1. Résumé exécutif<a id="1-résumé-exécutif"></a>
+
+### Pourquoi l’optimisation d’inférence est devenue critique  
+
+- **Poids économique** : jusqu’à **90 % de la facture IA** provient de l’inférence. Dans l’étude interne, un cluster de **8 × H100** coûte **276 k $ / an** en *on‑demand* AWS, soit **+128 %** vs un achat on‑prem équivalent.:contentReference[oaicite:7]{index=7}  
+- **Tension sur la mémoire** : SemiAnalysis montre que la mémoire représente près de **40 % du coût matériel** d’un serveur IA ; elle devient le principal poste de dépense quand la taille des modèles augmente.:contentReference[oaicite:1]{index=1}  
+- **Pression sur les prix GPU** : pour rester compétitif face aux futurs GB200 NVL72, le tarif horaire d’un H100 devrait tomber à ~**0,98 $/h** selon SemiAnalysis.:contentReference[oaicite:2]{index=2}  
+
+### Levier : l’optimisation logicielle  
+
+> Les leviers logiciels (quantization FP8/INT8, *in‑flight batching*, *paged KV cache*, *speculative decoding*) font baisser la facture cloud de **30 → 70 %** ou augmentent de **50 %** la charge utile sur la même machine.:contentReference[oaicite:8]{index=8}  
+
+NVIDIA formalise ces techniques dans **TensorRT‑LLM** : la dernière version double le *throughput* et réduit la latence de plus de 40 % grâce à ses kernels dédiés et son batching dynamique.:contentReference[oaicite:4]{index=4}  
+
+### Preuve par la pratique : *Inference‑Optim‑LLM*  
+
+Le dépôt <https://github.com/growthsystemes/open-source-ai> fournit un **banc d’essai Dockerisé** qui mesure, à matériel constant, l’écart entre :
+
+| Config (RTX 4070) | TPS moyen | Latence | VRAM | Conso | Speed‑up |
+|-------------------|-----------|---------|------|--------|----------|
+| **PyTorch CPU**   | 6,6       | 9,7 s   | —    | —      | 1× |
+| **Baseline GPU (64 T)** | 70 | 0,8 s | 1 513 MB | 30 W | **10×** |
+| **TensorRT‑LLM FP16 (200 T)** | 81 | 2,4 s | 882 MB | 17 W | **12×** |
+| **TensorRT‑LLM + Batch 4 (200 T)** | **101** | **1,8 s** | 882 MB | 18 W | **15×** |
+
+Ces gains pratiques confirment l’ordre de grandeur théorique et servent de **référence reproductible** pour dimensionner un pipeline avant mise en production.
+
+### Impact business  
+
+- **Économie directe** : sur un budget GPU de **10 k €/mois**, un gain moyen de **40 %** libère **≈ 48 k € de marge annuelle**.:contentReference[oaicite:9]{index=9}  
+- **Décision stratégique** : lorsque les coûts d’hébergement convergent, la **différenciation se joue sur l’efficacité logicielle** et non plus sur l’accès au matériel.  
+
+### Feuille de route recommandée  
+
+1. **Auditer les workloads** : profiler prompts, batch, latence cible.  
+2. **Prototyper avec *Inference‑Optim‑LLM*** : valider les gains FP8, batching, paged‑attention sur un GPU local.  
+3. **Industrialiser TensorRT‑LLM** : intégrer la compilation, le *serving* et la télémétrie dans CI/CD.  
+4. **Optimisation continue** : introduire le *speculative decoding* et ajuster dynamiquement le batch en fonction du trafic.  
+
+> **En résumé**, l’optimisation d’inférence est le levier n° 1 pour abaisser le *Total Cost of Ownership* des LLM ; le duo *Étude + Projet de démo* fournit à la fois le **cadre analytique** et le **kit opérationnel** pour passer de la théorie aux économies mesurables.
+
+
 L’inférence représente aujourd’hui près de **90 % de la facture GPU** d’un service IA : par exemple, un cluster de 8 H100 loué à l’heure dans le cloud peut dépasser **276 k $ par an**, soit plus du double d’un déploiement on-prem équivalent.:contentReference[oaicite:3]{index=3} Réduire ce poste n’est plus une option, c’est un impératif économique pour toute offre fondée sur les grands modèles de langage.
 
 **Inference-Optim-LLM** répond à cet enjeu en fournissant un banc d’essai reproductible qui compare, à matériel constant, une implémentation **PyTorch baseline** à son équivalent **TensorRT-LLM** optimisé. Le dépôt met à disposition :
