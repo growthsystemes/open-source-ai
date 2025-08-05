@@ -1,27 +1,29 @@
-GrowthSystemes AI Hub – Open-Source License
-==========================================
+GrowthSystemes AI Hub — Dual License
+====================================
 
-Ce dépôt est distribué sous un schéma de double licence :
+SPDX-License-Identifier: MIT OR CC‑BY‑4.0  
+© 2025 GrowthSystemes – https://growthsystemes.com
 
-1. **Code source** (fichiers `.py`, `.go`, `.ts`, `.json` de configuration,
-   Dockerfiles, YAML Kubernetes, Terraform, etc.)  
-   → sous licence **MIT** (texte complet ci-dessous).
+Ce dépôt est placé sous un régime de double licence :
 
-2. **Contenus documentaires** (workflows n8n au format JSON, white-papers,
-   diagrammes, fichiers Markdown du dossier `docs/`, tout PDF généré)  
-   → sous licence **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
-   Le texte intégral est disponible dans `LICENSE-CC-BY-4.0.txt` et
-   sur <https://creativecommons.org/licenses/by/4.0/legalcode>.
+Catégorie de fichier | Licence | Identifiant SPDX à placer en tête de chaque fichier
+----------------------|---------|-----------------------------------------------------
+Code et scripts : `.py`, `.go`, `.ts`, `.json`, Dockerfile, YAML Kubernetes, Terraform, etc. | MIT | SPDX-License-Identifier: MIT
+Contenus documentaires : workflows n8n (JSON), diagrammes, white‑papers, Markdown de `docs/`, PDF générés, etc. | Creative Commons Attribution 4.0 International | SPDX-License-Identifier: CC-BY-4.0
 
-Sauf mention contraire explicite dans l’en-tête d’un fichier, ces règles
+--------------------------------------------------------------------
+
+## 0. Champ d’application
+
+Sauf mention contraire explicite dans l’en‑tête d’un fichier, les règles ci‑dessus
 s’appliquent à l’ensemble du dépôt.  
-Pour éviter toute ambiguïté : **la seule présence de ce fichier n’accorde
-aucun droit sur des dépendances tierces** incluses par git submodule ou
-gestionnaire de paquets ; chaque dépendance conserve sa propre licence.
+La présence de ce texte n’accorde aucun droit sur les dépendances tierces
+importées via `git submodule`, `go mod`, `npm`, `pip`, etc. : chaque dépendance
+conserve sa propre licence.
 
 --------------------------------------------------------------------
-                          MIT LICENSE
---------------------------------------------------------------------
+
+## 1. Licence du code : MIT (Licence officielle, non modifiée)
 
 Copyright (c) 2025 GrowthSystemes
 
@@ -30,7 +32,7 @@ of this software and associated documentation files (the “Software”), to dea
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions :
+furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
@@ -43,42 +45,79 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
---------------------------------------------------------------------
-                    NOTICE – CC BY 4.0 CONTENT
---------------------------------------------------------------------
-
-Les fichiers non code (section 2 ci-dessus) sont publiés sous
-**Creative Commons Attribution 4.0 International**.  
-Vous êtes libre :
-
-* de **partager** – copier, distribuer et communiquer le matériel par tout moyen ;
-* d’**adapter** – remixer, transformer et créer à partir du matériel,
-  pour toute utilisation, y compris commerciale ;
-
-à condition de :
-
-* **créditer** l’œuvre de façon appropriée en citant « GrowthSystemes »,
-  en fournissant un lien vers la licence et en indiquant si des
-  modifications ont été effectuées ;
-* **ne pas ajouter de restrictions** légales ou technologiques
-  empêchant les autres de faire ce que la licence permet.
-
-Pour tout détail juridique, référez-vous au texte complet de la CC BY 4.0.
+### 1.1 Licence brevets  
+GrowthSystemes n’accorde aucune licence de brevet par la présente.  
+Si vous avez besoin d’une telle licence, veuillez nous contacter.
 
 --------------------------------------------------------------------
-               CLAUSE DE NON-RESPONSABILITÉ RÉGLEMENTAIRE
+
+## 2. Licence de la documentation : CC BY 4.0
+
+Les fichiers listés dans la colonne « Contenus documentaires » ci‑dessus sont
+publiés sous Creative Commons Attribution 4.0 International.  
+Texte intégral : https://creativecommons.org/licenses/by/4.0/legalcode
+
+### 2.1 Exemple d’attribution correcte
+« Workflow _Data‑Sync v2_ », © 2025 GrowthSystemes,  
+sous licence CC BY 4.0 – https://creativecommons.org/licenses/by/4.0/.  
+Modifié par Alice Durand (le 3 février 2026).
+
 --------------------------------------------------------------------
 
-Les workflows et exemples fournis sont destinés à des fins
-éducatives ou de démonstration.  
-**Avant toute mise en production, vous êtes responsable de vérifier la
-conformité :**
+## 3. Contributions externes
 
-* aux règlements d’exportation,
-* aux législations locales sur la protection des données,
-* aux conventions de licence des modèles et dépendances externes,
-* aux politiques de consommation énergétique et d’allocation GPU de votre
-  environnement.
+En soumettant une Pull Request ou tout autre contenu, vous acceptez que votre
+contribution soit publiée sous les mêmes licences : MIT pour le code et
+CC BY 4.0 pour la documentation.  
+Si vous ne pouvez pas accorder ces droits, n’envoyez pas de contribution.
 
-GrowthSystemes décline toute responsabilité quant aux conséquences
-directes ou indirectes découlant de l’utilisation du dépôt.
+--------------------------------------------------------------------
+
+## 4. Marques et noms commerciaux
+
+Cette licence n’accorde aucun droit d’usage des marques, logos ou noms
+commerciaux « GrowthSystemes » ou « GrowthSystemes AI Hub ».  
+Tout usage nécessite une autorisation écrite préalable.
+
+--------------------------------------------------------------------
+
+## 5. Fichiers générés et assets intégrés
+
+Certains PDF ou diagrammes peuvent incorporer des polices, icônes ou images
+soumis aux licences de leurs propriétaires respectifs.  
+Vous êtes responsable de vérifier et de respecter ces licences.
+
+--------------------------------------------------------------------
+
+## 6. Clause de conformité réglementaire
+
+Les workflows et exemples sont fournis à titre démonstratif.  
+Avant toute mise en production, vous devez vérifier la conformité :
+
+* aux réglementations d’exportation ;
+* au RGPD et aux lois locales de protection des données ;
+* aux licences des modèles et dépendances externes ;
+* à la politique énergétique et GPU de votre environnement.
+
+GrowthSystemes décline toute responsabilité pour les conséquences directes ou
+indirectes liées à l’utilisation de ce dépôt.
+
+--------------------------------------------------------------------
+
+## 7. Traduction française de la licence MIT  
+
+(Annexe non normative ; seule la version anglaise fait foi)  
+
+Permission est accordée, gratuitement, à toute personne acquérant une copie
+du présent logiciel et des fichiers de documentation associés…  
+(Texte complet en français disponible dans LICENSE-MIT-FR.txt)
+
+--------------------------------------------------------------------
+
+Badge de conformité (optionnel pour votre README)
+
+[![License: MIT or CC BY 4.0](https://img.shields.io/badge/License-MIT%20or%20CC--BY%204.0-blue.svg)](LICENSE)
+
+--------------------------------------------------------------------
+
+FIN DU DOCUMENT
