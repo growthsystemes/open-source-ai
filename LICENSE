@@ -1,1 +1,84 @@
+GrowthSystemes AI Hub – Open-Source License
+==========================================
 
+Ce dépôt est distribué sous un schéma de double licence :
+
+1. **Code source** (fichiers `.py`, `.go`, `.ts`, `.json` de configuration,
+   Dockerfiles, YAML Kubernetes, Terraform, etc.)  
+   → sous licence **MIT** (texte complet ci-dessous).
+
+2. **Contenus documentaires** (workflows n8n au format JSON, white-papers,
+   diagrammes, fichiers Markdown du dossier `docs/`, tout PDF généré)  
+   → sous licence **Creative Commons Attribution 4.0 International (CC BY 4.0)**.  
+   Le texte intégral est disponible dans `LICENSE-CC-BY-4.0.txt` et
+   sur <https://creativecommons.org/licenses/by/4.0/legalcode>.
+
+Sauf mention contraire explicite dans l’en-tête d’un fichier, ces règles
+s’appliquent à l’ensemble du dépôt.  
+Pour éviter toute ambiguïté : **la seule présence de ce fichier n’accorde
+aucun droit sur des dépendances tierces** incluses par git submodule ou
+gestionnaire de paquets ; chaque dépendance conserve sa propre licence.
+
+--------------------------------------------------------------------
+                          MIT LICENSE
+--------------------------------------------------------------------
+
+Copyright (c) 2025 GrowthSystemes
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------
+                    NOTICE – CC BY 4.0 CONTENT
+--------------------------------------------------------------------
+
+Les fichiers non code (section 2 ci-dessus) sont publiés sous
+**Creative Commons Attribution 4.0 International**.  
+Vous êtes libre :
+
+* de **partager** – copier, distribuer et communiquer le matériel par tout moyen ;
+* d’**adapter** – remixer, transformer et créer à partir du matériel,
+  pour toute utilisation, y compris commerciale ;
+
+à condition de :
+
+* **créditer** l’œuvre de façon appropriée en citant « GrowthSystemes »,
+  en fournissant un lien vers la licence et en indiquant si des
+  modifications ont été effectuées ;
+* **ne pas ajouter de restrictions** légales ou technologiques
+  empêchant les autres de faire ce que la licence permet.
+
+Pour tout détail juridique, référez-vous au texte complet de la CC BY 4.0.
+
+--------------------------------------------------------------------
+               CLAUSE DE NON-RESPONSABILITÉ RÉGLEMENTAIRE
+--------------------------------------------------------------------
+
+Les workflows et exemples fournis sont destinés à des fins
+éducatives ou de démonstration.  
+**Avant toute mise en production, vous êtes responsable de vérifier la
+conformité :**
+
+* aux règlements d’exportation,
+* aux législations locales sur la protection des données,
+* aux conventions de licence des modèles et dépendances externes,
+* aux politiques de consommation énergétique et d’allocation GPU de votre
+  environnement.
+
+GrowthSystemes décline toute responsabilité quant aux conséquences
+directes ou indirectes découlant de l’utilisation du dépôt.
