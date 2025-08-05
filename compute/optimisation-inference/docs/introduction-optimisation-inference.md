@@ -1,5 +1,9 @@
 # Introduction à l'optimisation de l'Inférence
 
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://docker.com)
+[![NVIDIA](https://img.shields.io/badge/NVIDIA-GPU%20Optimized-green?logo=nvidia)](https://nvidia.com)
+[![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)](https://python.org)
+
 L’inférence représente aujourd’hui près de **90 % de la facture GPU** d’un service IA : par exemple, un cluster de 8 H100 loué à l’heure dans le cloud peut dépasser **276 k $ par an**, soit plus du double d’un déploiement on-prem équivalent.:contentReference[oaicite:3]{index=3} Réduire ce poste n’est plus une option, c’est un impératif économique pour toute offre fondée sur les grands modèles de langage.
 
 **Inference-Optim-LLM** répond à cet enjeu en fournissant un banc d’essai reproductible qui compare, à matériel constant, une implémentation **PyTorch baseline** à son équivalent **TensorRT-LLM** optimisé. Le dépôt met à disposition :
