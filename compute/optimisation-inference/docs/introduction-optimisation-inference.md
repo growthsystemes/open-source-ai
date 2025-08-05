@@ -1,4 +1,4 @@
-# Introduction
+# Introduction à l'optimisation de l'Inférence
 
 L’inférence représente aujourd’hui près de **90 % de la facture GPU** d’un service IA : par exemple, un cluster de 8 H100 loué à l’heure dans le cloud peut dépasser **276 k $ par an**, soit plus du double d’un déploiement on-prem équivalent.:contentReference[oaicite:3]{index=3} Réduire ce poste n’est plus une option, c’est un impératif économique pour toute offre fondée sur les grands modèles de langage.
 
