@@ -1,4 +1,4 @@
-# Introduction à l'optimisation de l'Inférence
+# Introduction à l'optimisation de l'Inférence (TensorRT-LLM)
 
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://docker.com)
 [![NVIDIA](https://img.shields.io/badge/NVIDIA-GPU%20Optimized-green?logo=nvidia)](https://nvidia.com)
