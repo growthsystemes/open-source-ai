@@ -1,0 +1,3 @@
+[submodule "langgraph_agent_entreprise_analytic"]
+	path = agents/langchain_browser_email_agent
+	url = https://github.com/Stirito/langchain_browser_email_agent.git
