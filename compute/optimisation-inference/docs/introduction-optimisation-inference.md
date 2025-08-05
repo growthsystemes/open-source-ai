@@ -9,7 +9,7 @@
 ## Table des matières complète  
 ### (Étude « Optimisation de l’Inférence » + Projet *Inference‑Optim‑LLM*)
 
-### **Partie 1 – Étude “Optimisation de l’Inférence LLM”** :contentReference[oaicite:2]{index=2}
+### **Partie 1 – Étude “Optimisation de l’Inférence LLM”** : https://github.com/growthsystemes/open-source-ai/tree/main/compute/optimisation-inference/optimum-llm-tensorrt-llm-demo
 1.  [Résumé exécutif](#1-résumé-exécutif)  
 2.  [Contexte & enjeux](#2-contexte--enjeux)  
 3.  [Fondamentaux de l’inférence](#3-fondamentaux-de-linférence)  
