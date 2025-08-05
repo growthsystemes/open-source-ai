@@ -21,3 +21,9 @@ Selon l’étude de référence, la combinaison de ces techniques **divise par t
 
 Développé par **Quentin Gavila** et l’équipe **Growthsystemes**, Inference-Optim-LLM constitue la base opérationnelle idéale pour évaluer, optimiser et industrialiser vos workloads LLM.
 
+## Comment les LLM utilise l'attention_head pour processer les tokens 
+![Graphiques-Inferences---Frame-5](https://github.com/user-attachments/assets/5def98ca-90d5-4fcf-b437-dd28e504182c)
+
+### Comment intervient le KV-cache
+![Graphiques-Inferences---Frame-7](https://github.com/user-attachments/assets/190474cf-d9c8-44f0-b807-120b520772a1)
+
