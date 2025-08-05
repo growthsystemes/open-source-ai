@@ -1,0 +1,10 @@
+# Dépendances pour l'environnement baseline
+transformers>=4.39
+sentencepiece
+accelerate
+torch
+numpy
+huggingface-hub
+typer
+rich
+pynvml

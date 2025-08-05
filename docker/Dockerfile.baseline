@@ -1,0 +1,64 @@
+# Dockerfile pour environnement baseline (HuggingFace + PyTorch)
+FROM python:3.10-slim
+
+# Metadonnees
+LABEL maintainer="inference-optim-llm"
+LABEL description="Baseline LLM inference avec HuggingFace Transformers"
+
+# Arguments de build
+ARG MODEL_ID=gpt2
+ARG BATCH_SIZE=1
+ARG MAX_NEW_TOKENS=64
+
+# Variables d'environnement
+ENV MODEL_ID=${MODEL_ID}
+ENV BATCH_SIZE=${BATCH_SIZE}
+ENV MAX_NEW_TOKENS=${MAX_NEW_TOKENS}
+ENV PYTHONPATH=/workspace
+ENV HF_HOME=/workspace/.cache/huggingface
+ENV TRANSFORMERS_CACHE=/workspace/.cache/huggingface/transformers
+ENV HF_HUB_CACHE=/workspace/.cache/huggingface/hub
+
+# Installation des dependances systeme
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Répertoire de travail
+WORKDIR /workspace
+
+# Installation des dépendances Python
+COPY requirements-baseline.txt .
+RUN pip install --no-cache-dir -r requirements-baseline.txt
+
+# Copie du code source
+COPY inference_optim_llm/ ./inference_optim_llm/
+COPY scripts/ ./scripts/
+COPY data/ ./data/
+COPY pyproject.toml .
+COPY README.md .
+
+# Installation du package local
+RUN pip install -e .
+
+# Création des répertoires nécessaires
+RUN mkdir -p /workspace/reports /workspace/models /workspace/.cache
+
+# Test de l'installation
+RUN python -c "from inference_optim_llm.core.metrics import MetricsCollector; print('Package OK')" && \
+    python -c "import torch; print('PyTorch OK')" && \
+    python -c "import transformers; print('Transformers OK')"
+
+# Telechargement du modele par defaut
+RUN python -c "from transformers import AutoTokenizer, AutoModelForCausalLM; print('Downloading model ${MODEL_ID}...'); tokenizer = AutoTokenizer.from_pretrained('${MODEL_ID}'); model = AutoModelForCausalLM.from_pretrained('${MODEL_ID}'); print('Model downloaded')"
+
+# Utilisateur non-root pour la securite
+RUN useradd -m -u 1000 llmuser && chown -R llmuser:llmuser /workspace
+USER llmuser
+
+# Point d'entree
+ENTRYPOINT ["python", "-m", "inference_optim_llm.cli"]
+CMD ["run", "baseline", "--help"]

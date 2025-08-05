@@ -1,0 +1,72 @@
+# Alternative Docker Compose avec images GPU pré-configurées
+version: '3.8'
+
+services:
+  # Service baseline avec support GPU alternatif
+  baseline-gpu:
+    image: pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
+    environment:
+      - MODEL_ID=${MODEL_ID:-gpt2}
+      - BATCH_SIZE=${BATCH_SIZE:-1}
+      - MAX_NEW_TOKENS=${MAX_NEW_TOKENS:-64}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+    volumes:
+      - .:/workspace
+      - ./data:/workspace/data:ro
+      - ./reports:/workspace/reports
+      - hf_cache:/workspace/.cache/huggingface
+    working_dir: /workspace
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: >
+      bash -c "
+      pip install -e . &&
+      pip install transformers>=4.39.0 typer rich huggingface-hub pynvml &&
+      python -m inference_optim_llm.cli run baseline --prompts-file data/prompts.txt --save-json reports/baseline.jsonl --quiet
+      "
+    profiles:
+      - gpu-alt
+
+  # Service TensorRT-LLM avec image NGC
+  trtllm-gpu:
+    image: nvcr.io/nvidia/tensorrt:24.02-py3
+    environment:
+      - MODEL_ID=${MODEL_ID:-gpt2}
+      - BATCH_SIZE=${BATCH_SIZE:-1}
+      - MAX_NEW_TOKENS=${MAX_NEW_TOKENS:-64}
+      - TRT_PRECISION=${TRT_PRECISION:-fp16}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+    volumes:
+      - .:/workspace
+      - ./data:/workspace/data:ro
+      - ./reports:/workspace/reports
+      - ./engines:/workspace/engines
+      - hf_cache:/workspace/.cache/huggingface
+    working_dir: /workspace
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: >
+      bash -c "
+      pip install -e . &&
+      pip install transformers>=4.39.0 typer rich huggingface-hub pynvml &&
+      pip install --extra-index-url https://pypi.nvidia.com tensorrt-llm || echo 'TensorRT-LLM install failed' &&
+      python -m inference_optim_llm.cli run trtllm --prompts-file data/prompts.txt --save-json reports/trtllm.jsonl --quiet || python -m inference_optim_llm.cli run baseline --prompts-file data/prompts.txt --save-json reports/baseline-fallback.jsonl --quiet
+      "
+    profiles:
+      - gpu-alt
+
+volumes:
+  hf_cache:
+    driver: local

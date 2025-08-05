@@ -1,0 +1,103 @@
+services:
+  # Service baseline (HuggingFace + PyTorch)
+  baseline:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.baseline
+      args:
+        MODEL_ID: ${MODEL_ID:-gpt2}
+        BATCH_SIZE: ${BATCH_SIZE:-1}
+        MAX_NEW_TOKENS: ${MAX_NEW_TOKENS:-64}
+    image: inference-optim-llm:baseline
+    environment:
+      - MODEL_ID=${MODEL_ID:-gpt2}
+      - BATCH_SIZE=${BATCH_SIZE:-1}
+      - MAX_NEW_TOKENS=${MAX_NEW_TOKENS:-64}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+    volumes:
+      - ./data:/workspace/data:ro
+      - ./reports:/workspace/reports
+      - hf_cache:/workspace/.cache/huggingface
+    working_dir: /workspace
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: ["run", "baseline", "--prompts-file", "data/prompts.txt", "--save-json", "reports/baseline.jsonl", "--quiet"]
+    profiles:
+      - baseline
+      - bench
+
+  # Service TensorRT-LLM
+  trtllm:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.trtllm
+      args:
+        MODEL_ID: ${MODEL_ID:-gpt2}
+        BATCH_SIZE: ${BATCH_SIZE:-1}
+        MAX_NEW_TOKENS: ${MAX_NEW_TOKENS:-64}
+        PRECISION: ${TRT_PRECISION:-fp16}
+    image: inference-optim-llm:trtllm
+    environment:
+      - MODEL_ID=${MODEL_ID:-gpt2}
+      - BATCH_SIZE=${BATCH_SIZE:-1}
+      - MAX_NEW_TOKENS=${MAX_NEW_TOKENS:-64}
+      - TRT_PRECISION=${TRT_PRECISION:-fp16}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+    volumes:
+      - ./data:/workspace/data:ro
+      - ./reports:/workspace/reports
+      - ./engines:/workspace/engines
+      - hf_cache:/workspace/.cache/huggingface
+    working_dir: /workspace
+    runtime: nvidia
+    command: ["run", "trtllm", "--prompts-file", "data/prompts.txt", "--save-json", "reports/trtllm.jsonl", "--quiet"]
+    profiles:
+      - trtllm
+      - bench
+
+  # Service d'analyse des résultats
+  analyzer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.baseline
+    image: inference-optim-llm:baseline
+    volumes:
+      - ./reports:/workspace/reports
+    working_dir: /workspace
+    command: ["python", "scripts/benchmark.py", "--reports-dir", "reports", "--output-md", "reports/benchmark_results.md"]
+    depends_on:
+      - baseline
+    profiles:
+      - analyze
+      - bench
+
+  # Service de développement interactif
+  dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.baseline
+    image: inference-optim-llm:baseline
+    environment:
+      - MODEL_ID=${MODEL_ID:-gpt2}
+      - BATCH_SIZE=${BATCH_SIZE:-1}
+      - MAX_NEW_TOKENS=${MAX_NEW_TOKENS:-64}
+    volumes:
+      - .:/workspace
+      - hf_cache:/workspace/.cache/huggingface
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: ["bash"]
+    profiles:
+      - dev
+
+# Volumes persistants
+volumes:
+  hf_cache:
+    driver: local

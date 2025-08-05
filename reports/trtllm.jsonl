@@ -1,0 +1,10 @@
+{"prompt": "Hello, how are you?", "latency": 1.1208566419991257, "tokens": 64, "memory_mb": 1511.4296875, "power_w": 16.3725, "tps": 57.099184321958916}
+{"prompt": "Explain quantum entanglement in simple terms.", "latency": 0.7697699739983364, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 25.701, "tps": 83.14172046432448}
+{"prompt": "What is the capital of France?", "latency": 0.7665194649998739, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 33.539, "tps": 83.49429195514367}
+{"prompt": "Write a short poem about artificial intelligence.", "latency": 0.7214341740000236, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 34.852000000000004, "tps": 88.71218235358768}
+{"prompt": "Describe the process of photosynthesis.", "latency": 0.7571957129985094, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 35.1165, "tps": 84.52240141001167}
+{"prompt": "What are the benefits of renewable energy?", "latency": 0.8923605769996357, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 35.1175, "tps": 71.7198872850096}
+{"prompt": "How does machine learning work?", "latency": 0.8015354089984612, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 35.052, "tps": 79.84675322075867}
+{"prompt": "Explain the theory of relativity briefly.", "latency": 0.7637185439998575, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 35.158500000000004, "tps": 83.80050543857416}
+{"prompt": "What is the difference between DNA and RNA?", "latency": 0.7514485589999822, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 35.467, "tps": 85.16883721910433}
+{"prompt": "Tell me about the history of the internet.", "latency": 0.700075728000229, "tokens": 64, "memory_mb": 1513.4296875, "power_w": 35.7305, "tps": 91.41868149438123}

@@ -1,0 +1,35 @@
+# Dépendances de développement pour inference-optim-llm
+# Installez avec: pip install -r requirements-dev.txt
+
+# Package principal en mode développement
+-e .
+
+# Dépendances core
+torch>=2.0.0
+transformers>=4.39.0
+huggingface-hub>=0.16.0
+typer>=0.9.0
+numpy>=1.21.0
+sentencepiece>=0.1.99
+accelerate>=0.20.0
+
+# Interface utilisateur
+rich>=13.0.0
+
+# Monitoring GPU
+pynvml>=11.0.0
+
+# Visualisation
+matplotlib>=3.5.0
+
+# Développement et tests
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+ruff>=0.1.0
+mypy>=1.0.0
+types-requests
+
+# Outils utiles
+ipython
+jupyter

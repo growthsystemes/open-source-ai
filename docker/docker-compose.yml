@@ -1,0 +1,155 @@
+# Docker Compose pour orchestration des benchmarks LLM
+version: "3.9"
+
+# Configuration des volumes partagés
+volumes:
+  hf_cache:
+    driver: local
+  engines_cache:
+    driver: local
+
+services:
+  # ========================================================================
+  # Service baseline (HuggingFace/PyTorch)
+  # ========================================================================
+  baseline:
+    build:
+      context: ./baseline
+      args:
+        MODEL_ID: ${MODEL_ID:-meta-llama/Llama-2-7b-chat-hf}
+        HF_HOME: /workspace/.cache/huggingface
+    env_file: 
+      - ../../.env
+    environment:
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+      - MODEL_ID=${MODEL_ID:-meta-llama/Llama-2-7b-chat-hf}
+      - HF_HOME=/workspace/.cache/huggingface
+    volumes:
+      # Données d'entrée (lecture seule)
+      - ../data:/workspace/data:ro
+      # Cache HuggingFace partagé
+      - hf_cache:/workspace/.cache/huggingface
+      # Répertoire de rapports (écriture)
+      - ../reports:/workspace/reports
+    runtime: nvidia
+    command: >
+      python scripts/run_baseline.py 
+      --prompts-file data/prompts.txt 
+      --out reports/baseline.jsonl
+      --batch-size ${BATCH_SIZE:-1}
+      --max-new-tokens ${MAX_NEW_TOKENS:-64}
+    profiles:
+      - baseline
+      - bench
+
+  # ========================================================================
+  # Service TensorRT-LLM optimisé
+  # ========================================================================
+  trtllm:
+    build:
+      context: ./trtllm
+      args:
+        MODEL_ID: ${MODEL_ID:-meta-llama/Llama-2-7b-chat-hf}
+        QUANT_MODE: ${TRT_PRECISION:-fp16}
+        HF_HOME: /workspace/.cache/huggingface
+    env_file: 
+      - ../../.env
+    environment:
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+      - MODEL_ID=${MODEL_ID:-meta-llama/Llama-2-7b-chat-hf}
+      - TRT_PRECISION=${TRT_PRECISION:-fp16}
+      - HF_HOME=/workspace/.cache/huggingface
+    volumes:
+      # Données d'entrée (lecture seule)
+      - ../data:/workspace/data:ro
+      # Cache HuggingFace et engines partagés
+      - hf_cache:/workspace/.cache/huggingface
+      - engines_cache:/workspace/engines
+      # Répertoire de rapports (écriture)
+      - ../reports:/workspace/reports
+    runtime: nvidia
+    command: >
+      python scripts/run_trtllm.py 
+      --prompts-file data/prompts.txt 
+      --out reports/trtllm.jsonl
+      --batch-size ${BATCH_SIZE:-1}
+      --max-new-tokens ${MAX_NEW_TOKENS:-64}
+      --precision ${TRT_PRECISION:-fp16}
+    profiles:
+      - trtllm
+      - bench
+
+  # ========================================================================
+  # Service de benchmark complet
+  # ========================================================================
+  bench-baseline:
+    extends:
+      service: baseline
+    command: >
+      python scripts/run_baseline.py 
+      --prompts-file data/prompts.txt 
+      --out reports/baseline.jsonl
+      --batch-size ${BATCH_SIZE:-1}
+      --max-new-tokens ${MAX_NEW_TOKENS:-64}
+      --quiet
+    profiles:
+      - bench-only
+
+  bench-trtllm:
+    extends:
+      service: trtllm
+    command: >
+      python scripts/run_trtllm.py 
+      --prompts-file data/prompts.txt 
+      --out reports/trtllm.jsonl
+      --batch-size ${BATCH_SIZE:-1}
+      --max-new-tokens ${MAX_NEW_TOKENS:-64}
+      --precision ${TRT_PRECISION:-fp16}
+      --quiet
+    depends_on:
+      - bench-baseline
+    profiles:
+      - bench-only
+
+  # ========================================================================
+  # Service d'analyse des résultats
+  # ========================================================================
+  analyze:
+    build:
+      context: ./baseline  # Réutilise l'image baseline
+      args:
+        MODEL_ID: ${MODEL_ID:-meta-llama/Llama-2-7b-chat-hf}
+    volumes:
+      - ../reports:/workspace/reports
+      - ../docs:/workspace/docs
+    command: >
+      sh -c "
+        python scripts/benchmark.py --reports-dir reports --quiet &&
+        python scripts/export_results.py --reports-dir reports --skip-charts
+      "
+    depends_on:
+      - bench-baseline
+      - bench-trtllm
+    profiles:
+      - analyze
+      - bench-only
+
+  # ========================================================================
+  # Service de développement/debug
+  # ========================================================================
+  dev:
+    build:
+      context: ./baseline
+    volumes:
+      - ../data:/workspace/data
+      - ../inference_optim_llm:/workspace/inference_optim_llm
+      - ../scripts:/workspace/scripts
+      - ../reports:/workspace/reports
+      - ../docs:/workspace/docs
+      - hf_cache:/workspace/.cache/huggingface
+    runtime: nvidia
+    command: bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - dev
