@@ -6,6 +6,29 @@
 
 <img width="1536" height="1024" alt="image (8)" src="https://github.com/user-attachments/assets/0946ed65-1e46-457f-9321-c89887d3bec4" />
 
+## Table des matières complète  
+### (Étude « Optimisation de l’Inférence » + Projet *Inference‑Optim‑LLM*)
+
+### **Partie 1 – Étude “Optimisation de l’Inférence LLM”** :contentReference[oaicite:2]{index=2}
+1.  [Résumé exécutif](#1-résumé-exécutif)  
+2.  [Contexte & enjeux](#2-contexte--enjeux)  
+3.  [Fondamentaux de l’inférence](#3-fondamentaux-de-linférence)  
+    3.1 [Comprendre l’inférence](#31-comprendre-linférence)  
+    3.2 [Tokenisation & représentations](#32-tokenisation--représentations)  
+    3.3 [Attention head & calcul matriciel](#33-attention-head--calcul-matriciel)  
+    3.4 [Rôle du KV‑cache](#34-rôle-du-kv-cache)  
+    3.5 [Impact des prompts sur la mémoire](#35-impact-des-prompts-sur-la-mémoire)  
+4.  [Leviers d’optimisation](#4-leviers-doptimisation)  
+    4.1 [Quantization FP8 / INT8](#41-quantization-fp8--int8)  
+    4.2 [In‑flight batching](#42-in‑flight-batching)  
+    4.3 [Paged KV‑cache](#43-paged-kv-cache)  
+    4.4 [Speculative decoding](#44-speculative-decoding)  
+5.  [Architecture de référence](#5-architecture-de-référence)  
+6.  [Benchmark & résultats](#6-benchmark--résultats)  
+7.  [Analyse économique](#7-analyse-économique)  
+8.  [Feuille de route d’industrialisation](#8-feuille-de-route-dindustrialisation)  
+9.  [Conclusion](#9-conclusion)  
+10. [Références](#10-références) 
 
 
 L’inférence représente aujourd’hui près de **90 % de la facture GPU** d’un service IA : par exemple, un cluster de 8 H100 loué à l’heure dans le cloud peut dépasser **276 k $ par an**, soit plus du double d’un déploiement on-prem équivalent.:contentReference[oaicite:3]{index=3} Réduire ce poste n’est plus une option, c’est un impératif économique pour toute offre fondée sur les grands modèles de langage.
