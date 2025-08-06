@@ -1,6 +1,0 @@
-[submodule "langgraph_agent_entreprise_analytic"]
-	path = agents/langchain_browser_email_agent
-	url = https://github.com/Stirito/langchain_browser_email_agent.git
-[submodule "synthetic-data-llm-gen-demo"]
-	path = compute/synthetic-data/synthetic-data-llm-gen-demo
-	url = https://github.com/Stirito/synthetic-data-llm-gen-demo.git
