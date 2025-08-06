@@ -18,7 +18,6 @@ Ce dépôt sert donc de point d’entrée unique : clonage, expérimentation, 
 | **`compute/`**    | Modules de calcul lourd : optimisation de l'allocation des gpu, génération de données synthétiques pour LLM, pipelines de fine‑tuning, notebooks d’expérimentation. |
 | **`infra/`**      | Infrastructure‑as‑Code (Docker, Terraform, scripts d’approvisionnement cloud) et modèles de déploiement pour reproduire nos environnements. |
 | **`workflows/`**  | Automatisation métiers, prêtes à l’emploi. |
-| **`.gitmodules`** | Déclaration de sous‑modules Git pour réutiliser des librairies ou projets tiers sans dupliquer le code. |
 | **`LICENSE`**     | Licence open‑source applicable (voir section Licence). |
 
 Cette arborescence évoluera : des dossiers additionnels pourront apparaître (par exemple `docs/`, `examples/`, `datasets/`).
