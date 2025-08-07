@@ -2,11 +2,11 @@
 
 Mesure le gain de performances qu'apporte [NVIDIA TensorRT‑LLM](https://github.com/NVIDIA/TensorRT-LLM) avec un petit modèle open‑source Hugging Face (TinyLlama 1.1B Chat) par rapport à l'inférence PyTorch "pure". Tout le projet tourne dans un conteneur Docker prêt à l'emploi : aucune compilation locale n'est nécessaire.
 
-## 🎯 Objectifs
+## Objectifs
 
-- ✅ Reproduire facilement un flux complet : télécharger le modèle → convertir/optimiser → générer un moteur TensorRT → benchmarker
-- 📊 Obtenir des métriques latency & throughput « out‑of‑the‑box »
-- 🔧 Servir de point de départ pour tester d'autres LLM, quantisations ou GPUs
+- Reproduire facilement un flux complet : télécharger le modèle → convertir/optimiser → générer un moteur TensorRT → benchmarker
+- Obtenir des métriques latency & throughput « out‑of‑the‑box »
+- Servir de point de départ pour tester d'autres LLM, quantisations ou GPUs
 
 ## 📁 Arborescence
 
@@ -28,15 +28,15 @@ Mesure le gain de performances qu'apporte [NVIDIA TensorRT‑LLM](https://github
 └── README.md
 ```
 
-## 🛠️ Prérequis
+## 🛠Prérequis
 
 - **Docker** avec support GPU (`nvidia-docker` ou Docker Desktop avec GPU)
 - **GPU NVIDIA** compatible CUDA (RTX 20xx/30xx/40xx recommandé)
 - **8+ GB de VRAM** (minimum pour TinyLlama 1.1B)
 - **Drivers NVIDIA** récents (525+)
-- **🔐 Compte NVIDIA NGC** (gratuit) pour accéder aux images TensorRT-LLM
+- **Compte NVIDIA NGC** (gratuit) pour accéder aux images TensorRT-LLM
 
-### 🚨 ÉTAPE OBLIGATOIRE : Authentification NVIDIA
+### ÉTAPE OBLIGATOIRE : Authentification NVIDIA
 
 **Avant de commencer**, vous devez vous authentifier sur le registry NVIDIA :
 
@@ -64,7 +64,7 @@ chmod +x setup_nvidia_auth.sh
    # Password: [votre_clé_API_qui_commence_par_nvapi-]
    ```
 
-📋 **Guide détaillé** : Voir [NVIDIA_SETUP.md](NVIDIA_SETUP.md)
+**Guide détaillé** : Voir [NVIDIA_SETUP.md](NVIDIA_SETUP.md)
 
 ### Vérification GPU
 
@@ -73,9 +73,9 @@ chmod +x setup_nvidia_auth.sh
 docker run --rm --gpus all nvidia/cuda:12.0-base-ubuntu20.04 nvidia-smi
 ```
 
-## 🚀 Utilisation Rapide
+## Utilisation Rapide
 
-### 🎯 Commande Recommandée (Une Ligne)
+### Commande Recommandée (Une Ligne)
 
 Après avoir configuré l'authentification NVIDIA, lancez le benchmark complet :
 
@@ -83,18 +83,18 @@ Après avoir configuré l'authentification NVIDIA, lancez le benchmark complet :
 docker-compose --profile auto up benchmark-full
 ```
 
-**⏱️ Durée estimée** : 15-25 minutes selon votre GPU  
-**📁 Résultats** : Générés automatiquement dans `./data/results/`
+**⏱Durée estimée** : 15-25 minutes selon votre GPU  
+**Résultats** : Générés automatiquement dans `./data/results/`
 
-### 📋 Pipeline Complet Exécuté
+### Pipeline Complet Exécuté
 
 Cette commande exécute automatiquement :
-1. 🔧 **Construction du moteur TensorRT** (`build_engine.sh`)
-2. 📊 **Benchmark PyTorch** (référence baseline)
-3. ⚡ **Benchmark TensorRT-LLM** (version optimisée)
-4. 📈 **Analyse comparative** (graphiques + rapport JSON)
+1. **Construction du moteur TensorRT** (`build_engine.sh`)
+2. **Benchmark PyTorch** (référence baseline)
+3. **Benchmark TensorRT-LLM** (version optimisée)
+4. **Analyse comparative** (graphiques + rapport JSON)
 
-### 🔧 Étapes Manuelles (Contrôle Avancé)
+### Étapes Manuelles (Contrôle Avancé)
 
 Pour plus de contrôle sur chaque étape :
 
@@ -112,7 +112,7 @@ docker-compose --profile tensorrt-only up benchmark-tensorrt
 docker-compose --profile compare-only up compare-results
 ```
 
-### 🔍 Mode Interactif (Debug/Exploration)
+### Mode Interactif (Debug/Exploration)
 
 Pour explorer le système ou déboguer :
 
@@ -132,7 +132,7 @@ ls -la data/engines/
 cat data/results/pytorch_benchmark.json
 ```
 
-## 📊 Résultats
+## Résultats
 
 Après exécution, vous trouverez dans `./data/results/` :
 
@@ -145,37 +145,37 @@ Après exécution, vous trouverez dans `./data/results/` :
 
 ### Métriques Analysées
 
-- **⏱️ Latence** : Temps de génération par séquence (ms)
-- **⚡ Débit** : Tokens générés par seconde
-- **💾 Mémoire GPU** : Utilisation VRAM (GB)
-- **📈 Speedup** : Facteur d'amélioration TensorRT vs PyTorch
+- **⏱Latence** : Temps de génération par séquence (ms)
+- **Débit** : Tokens générés par seconde
+- **Mémoire GPU** : Utilisation VRAM (GB)
+- **Speedup** : Facteur d'amélioration TensorRT vs PyTorch
 
 ### Exemple de Sortie Réelle (RTX 4070)
 
 ```
-🚀 RAPPORT DE PERFORMANCE - TensorRT-LLM vs PyTorch
+RAPPORT DE PERFORMANCE - TensorRT-LLM vs PyTorch
 ============================================================
 
-📈 LATENCE:
+LATENCE:
    PyTorch:     627.9 ms
    TensorRT:    260.3 ms
    📊 Speedup:   2.41x
    📉 Réduction: 58.5%
 
-⚡ DÉBIT:
+DÉBIT:
    PyTorch:     864.4 tokens/s
    TensorRT:    2723.2 tokens/s
    📊 Speedup:   3.15x
    📈 Gain:      215.0%
 
-💾 MÉMOIRE GPU:
+MÉMOIRE GPU:
    PyTorch:     2.60 GB
    TensorRT:    2.61 GB
    📊 Ratio:     1.00x
    📉 Variation: +0.1%
 ```
 
-## ⚙️ Configuration Avancée
+## ⚙Configuration Avancée
 
 ### Personnaliser les Paramètres de Benchmark
 
@@ -201,14 +201,14 @@ MODEL_NAME="facebook/opt-1.3b"
 
 Ce projet utilise les optimisations suivantes pour maximiser les performances :
 
-#### 🚀 Optimisations Automatiques
+#### Optimisations Automatiques
 - **torch.compile** : Compilation des graphes PyTorch pour de meilleures performances
 - **FP16 precision** : Calculs en demi-précision pour réduire la latence  
 - **KV-cache optimization** : Gestion optimisée du cache des clés/valeurs
 - **Kernel fusion** : Fusion des opérations GPU pour réduire les appels
 - **Memory pooling** : Gestion optimisée de la mémoire GPU
 
-#### ⚙️ Configuration Optimisée
+#### Configuration Optimisée
 ```python
 # Dans les scripts de benchmark
 model.eval()                    # Mode évaluation
@@ -218,13 +218,13 @@ use_cache=True                 # Cache KV activé
 num_beams=1                    # Single beam pour latence
 ```
 
-#### 📈 Pour des Gains Maximaux
+#### Pour des Gains Maximaux
 - Utilisez des **prompts longs** (100+ tokens)
 - Générez des **séquences longues** (200+ tokens)
 - Activez **torch.compile** (automatique dans ce projet)
 - Testez avec des **modèles plus grands** (7B, 13B)
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Erreurs Courantes
 
@@ -261,7 +261,7 @@ docker-compose --profile auto up benchmark-full --verbose
 docker-compose --profile manual run --rm tensorrt-llm-benchmark bash
 ```
 
-## 📈 Résultats de Benchmark Validés
+## Résultats de Benchmark Validés
 
 ### RTX 4070 - TinyLlama 1.1B (Séquences Longues)
 
@@ -281,14 +281,14 @@ docker-compose --profile manual run --rm tensorrt-llm-benchmark bash
 ### Pourquoi Ces Gains ?
 
 Les **séquences longues maximisent l'impact TensorRT-LLM** grâce à :
-- ✅ **Optimisations KV-cache** : Plus efficaces sur longues séquences
-- ✅ **Fusion des kernels GPU** : Réduction des appels GPU
-- ✅ **Gestion mémoire optimisée** : Moins de transferts CPU-GPU
-- ✅ **torch.compile** : Compilation optimisée des graphes
+- **Optimisations KV-cache** : Plus efficaces sur longues séquences
+- **Fusion des kernels GPU** : Réduction des appels GPU
+- **Gestion mémoire optimisée** : Moins de transferts CPU-GPU
+- **torch.compile** : Compilation optimisée des graphes
 
 *Les gains augmentent avec la longueur des séquences et la taille du modèle.*
 
-## 🔧 Personnalisation
+## Personnalisation
 
 ### Ajouter d'Autres Modèles
 
@@ -303,13 +303,13 @@ Modifiez `scripts/compare.py` pour ajouter :
 - Profiling détaillé du GPU
 - Comparaison avec d'autres backends (ONNX, OpenVINO)
 
-## 📚 Ressources
+## Ressources
 
 - [Documentation TensorRT-LLM](https://nvidia.github.io/TensorRT-LLM/)
 - [Guide d'optimisation NVIDIA](https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/)
 - [Modèles supportés](https://github.com/NVIDIA/TensorRT-LLM/tree/main/examples)
 
-## 🤝 Contribution
+## Contribution
 
 Les contributions sont bienvenues ! Ouvrez une issue ou proposez une pull request pour :
 - Support de nouveaux modèles
@@ -317,13 +317,13 @@ Les contributions sont bienvenues ! Ouvrez une issue ou proposez une pull reques
 - Amélioration des métriques
 - Documentation
 
-## 📄 Licence
+## Licence
 
 MIT License - Voir [LICENSE](LICENSE) pour plus de détails.
 
 ---
 
-## 🚀 Démarrage Rapide
+## Démarrage Rapide
 
 1. **Authentification NVIDIA** (obligatoire) :
    ```powershell
@@ -345,4 +345,4 @@ MIT License - Voir [LICENSE](LICENSE) pour plus de détails.
    open data/results/benchmark_comparison.png   # macOS
    ```
 
-**🎯 Résultats attendus sur RTX 4070** : **2.4x latence** et **3.2x débit** ! 🚀
+**Résultats attendus sur RTX 4070** : **2.4x latence** et **3.2x débit** ! 🚀
