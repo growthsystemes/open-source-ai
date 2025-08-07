@@ -29,6 +29,24 @@
 8.  [Conclusion](#9-conclusion)  
 9. [Références](#10-références) 
 
+**À retenir en 2 minutes**
+**1. Contexte économique et raison d’être.**
+Depuis que l’inférence représente entre 80 % et 90 % du TCO d’un LLM, la bataille de la rentabilité s’est déplacée de l’entraînement vers la phase de service. TensorRT‑LLM s’impose comme la réponse logicielle la plus mature pour compresser ces coûts : il permet de réduire la latence, la facture énergétique et la dépense GPU tout en préservant la qualité de génération. Ce guide expose, pas à pas, la méthode qui permet de passer d’un pipeline PyTorch « par défaut » à une pile optimisée inspirée des meilleures pratiques que NVIDIA documente sur ses blogs techniques.
+
+**2. Résultats quantifiés.**
+Sur un nœud 8 × H100‑SX, nous sommes passés d’un débit de 320 tokens/s à plus de 1 160 tokens/s avec Llama‑2 7B, tandis que la latence P95 chutait de 780 ms à 225 ms. Dans le même mouvement, le coût d’inférence a baissé de 0,42 $ à 0,16 $ par million de tokens et la consommation électrique est tombée de 91 Wh à 28 Wh pour la même charge. Ces chiffres, obtenus avec TensorRT‑LLM 0.9.1, illustrent un gain global de l’ordre de ×3,5 en performance et de –60 % à –70 % en dépenses opérationnelles.
+
+**3. Trois leviers techniques majeurs.**
+Le premier est la quantization FP8, qui exploite les Tensor Cores de dernière génération pour diviser par deux l’empreinte mémoire et par trois les transferts, sans altérer la perplexité (écart ≤ 1 point sur MMLU). Le second est le continuous batching : un ordonnanceur C++/CUDA insère et retire les requêtes à la milliseconde, ce qui maintient le GPU saturé sans padding superflu. Le troisième, Paged Attention couplé à Chunked Prefill, découpe le KV‑cache en blocs réutilisables et libère jusqu’à 80 % de VRAM, ce qui autorise des séquences plus longues ou des batchs plus grands sans surcoût.
+
+**4. Parcours d’industrialisation.**
+Le déploiement type s’articule en cinq étapes : un audit de charge d’une semaine pour profiler prompts et SLA ; un proof of concept TensorRT‑LLM de dix jours avec notebooks reproductibles et logs bruts ; la mise en place d’une CI/CD GitHub Actions qui compile et signe les moteurs sous forme d’images OCI ; une migration blue/green vers la production en deux semaines, avec rollback en moins d’une minute ; enfin, une phase d’optimisation continue où un jour par mois suffit à ajuster les seuils cost‑per‑token et à déclencher les alertes FinOps. Sur un cluster déjà loué, le retour sur investissement observé est inférieur à trois semaines.
+
+**5. Orientation lectorat.**
+Les chapitres économiques (1, 5, 6) s’adressent aux responsables produit et FinOps, qui y trouveront modèles de coûts, comparatifs cloud vs on‑prem et simulateur de ROI. Les sections techniques (2, 3, 4, 7) ciblent les ingénieurs ML et DevOps ; elles couvrent l’implémentation détaillée, les scripts de conversion, les manifestes Helm et les dashboards Prometheus prêts à l’emploi.
+
+**6. Bénéfice attendu.**
+En appliquant la procédure décrite, une organisation maintient la même exactitude qu’en FP16, multiplie par trois à cinq sa capacité de service et divise presque par trois sa facture GPU. L’inférence, longtemps considérée comme un gouffre financier incompressible, devient ainsi un avantage compétitif mesurable, libérant du budget pour l’innovation produit plutôt que pour des cycles GPU inexploités.
 
 ## 1. Résumé exécutif<a id="1-résumé-exécutif"></a>
 
