@@ -36,7 +36,7 @@
 ### Pourquoi l’optimisation d’inférence est devenue critique  
 
 - **Poids économique** : jusqu’à **90 % de la facture IA** provient de l’inférence. Dans l’étude interne, un cluster de **8 × H100** coûte **276 k $ / an** en *on‑demand* AWS, soit **+128 %** vs un achat on‑prem équivalent.:contentReference[oaicite:7]{index=7}  
-- **Tension sur la mémoire** : SemiAnalysis montre que la mémoire représente près de **40 % du coût matériel** d’un serveur IA ; elle devient le principal poste de dépense quand la taille des modèles augmente.:contentReference[oaicite:1]{index=1}  
+- **Tension sur la mémoire** : la mémoire représente près de **40 % du coût matériel** d’un serveur IA ; elle devient le principal poste de dépense quand la taille des modèles augmente.:contentReference[oaicite:1]{index=1}  
 - **Pression sur les prix GPU** : pour rester compétitif face aux futurs GB200 NVL72, le tarif horaire d’un H100 devrait tomber à ~**0,98 $/h** selon SemiAnalysis.:contentReference[oaicite:2]{index=2}  
 
 ### Levier : l’optimisation logicielle  
