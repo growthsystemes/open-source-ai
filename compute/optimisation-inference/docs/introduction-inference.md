@@ -1,6 +1,13 @@
 
 # Optimisation de l'Inférence LLM avec TensorRT-LLM : Guide Technique et Économique Complet
 
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://docker.com)
+[![NVIDIA](https://img.shields.io/badge/NVIDIA-GPU%20Optimized-green?logo=nvidia)](https://nvidia.com)
+[![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)](https://python.org)
+
+<img width="1536" height="1024" alt="optimisation-inference-introduction" src="https://github.com/user-attachments/assets/e9636f12-df72-49ea-807b-9fa8c6e7b17e" />
+
+
 ## Table des matières
 
 1. [Introduction et contexte économique](#1-introduction-et-contexte-économique)
@@ -20,7 +27,7 @@
 
 ### 1.1 L'impératif économique de l'optimisation d'inférence
 
-L'industrie de l'intelligence artificielle fait face à une réalité économique incontournable : [**l'inférence représente désormais jusqu'à 90% de la facture IA**](https://www.ankursnewsletter.com/p/the-real-price-of-ai-pre-training) contre seulement 10% pour l'entraînement. Cette disproportion s'explique par la nature même des modèles de langage en production : si l'entraînement est un investissement ponctuel, l'inférence est un coût récurrent qui croît avec l'adoption.
+L'industrie de l'intelligence artificielle fait face à une réalité économique incontournable : **l'inférence représente désormais jusqu'à 90% de la facture IA** contre seulement 10% pour l'entraînement. Cette disproportion s'explique par la nature même des modèles de langage en production : si l'entraînement est un investissement ponctuel, l'inférence est un coût récurrent qui croît avec l'adoption.
 
 Selon [les projections d'OpenAI](https://www.byteplus.com/en/topic/415184), les coûts combinés d'entraînement et d'inférence pourraient atteindre 7 milliards de dollars en 2025, illustrant l'ampleur des enjeux économiques.
 
