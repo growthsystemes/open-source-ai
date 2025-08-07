@@ -65,6 +65,8 @@ En combinant ces techniques, les pionniers du Software‑Defined AI Infrastructu
 
 ### 2.2 Cycle d’inférence : de la *Prefill* au *Decode*
 
+![llm-auto-regressif](https://github.com/user-attachments/assets/eb44c340-f0da-45b0-a5f2-60dfb2d79938)
+
 L'inférence LLM se décompose en deux phases distinctes :
 
 | Phase | Rôle fonctionnel | Profil matériel | Verrous principaux | Leviers d’optimisation |
@@ -93,6 +95,16 @@ Des frameworks récents (TensorRT-LLM 0.8, vLLM 0.4+) superposent le *prefill* d
 ---
 
 ### 2.3 Tokenisation : première ligne de coûts
+
+![llm-tokenizer](https://github.com/user-attachments/assets/21bd1c8a-f120-4c07-a0ce-90ef4c4580f1)
+
+> Un prompt d'input (envoyé à un LLM) est stocker **sous forme de matrice sur un GPU**.
+> 
+> Plus **le prompt est large**, plus **la matrice sur le GPU est large**.
+
+
+![association-vecteur-embedding-llm](https://github.com/user-attachments/assets/46244414-cfee-4325-82f3-16dcccfa60b8)
+
 
 #### Granularité
 
