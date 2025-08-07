@@ -10,40 +10,50 @@
 ### (Étude « Optimisation de l’Inférence » + Projet *Inference‑Optim‑LLM*)
 
 ### **Partie 1 – Étude “Optimisation de l’Inférence LLM”** : 
-1.  [Résumé exécutif](#1-résumé-exécutif)  
-2.  [Contexte & enjeux](#2-contexte--enjeux)  
-3.  [Fondamentaux de l’inférence](#3-fondamentaux-de-linférence)  
+1.  [Résumé exécutif](#1-résumé-exécutif)    
+2.  [Fondamentaux de l’inférence](#3-fondamentaux-de-linférence)  
     3.1 [Comprendre l’inférence](#31-comprendre-linférence)  
     3.2 [Tokenisation & représentations](#32-tokenisation--représentations)  
     3.3 [Attention head & calcul matriciel](#33-attention-head--calcul-matriciel)  
     3.4 [Rôle du KV‑cache](#34-rôle-du-kv-cache)  
     3.5 [Impact des prompts sur la mémoire](#35-impact-des-prompts-sur-la-mémoire)  
-4.  [Leviers d’optimisation](#4-leviers-doptimisation)  
+3.  [Leviers d’optimisation](#4-leviers-doptimisation)  
     4.1 [Quantization FP8 / INT8](#41-quantization-fp8--int8)  
     4.2 [In‑flight batching](#42-in‑flight-batching)  
     4.3 [Paged KV‑cache](#43-paged-kv-cache)  
     4.4 [Speculative decoding](#44-speculative-decoding)  
-5.  [Architecture de référence](#5-architecture-de-référence)  
-6.  [Benchmark & résultats](#6-benchmark--résultats)  
-7.  [Analyse économique](#7-analyse-économique)  
-8.  [Feuille de route d’industrialisation](#8-feuille-de-route-dindustrialisation)  
-9.  [Conclusion](#9-conclusion)  
-10. [Références](#10-références) 
+4.  [Architecture de référence](#5-architecture-de-référence)  
+5.  [Benchmark & résultats](#6-benchmark--résultats)  
+6.  [Analyse économique](#7-analyse-économique)  
+7.  [Feuille de route d’industrialisation](#8-feuille-de-route-dindustrialisation)  
+8.  [Conclusion](#9-conclusion)  
+9. [Références](#10-références) 
 
 
 ## 1. Résumé exécutif<a id="1-résumé-exécutif"></a>
 
 ### Pourquoi l’optimisation d’inférence est devenue critique  
 
+**Contexte :**
 - **Poids économique** : jusqu’à **90 % de la facture IA** provient de l’inférence. Dans l’étude interne, un cluster de **8 × H100** coûte **276 k $ / an** en *on‑demand* AWS, soit **+128 %** vs un achat on‑prem équivalent.:contentReference[oaicite:7]{index=7}  
 - **Tension sur la mémoire** : la mémoire représente près de **40 % du coût matériel** d’un serveur IA ; elle devient le principal poste de dépense quand la taille des modèles augmente.:contentReference[oaicite:1]{index=1}  
 - **Pression sur les prix GPU** : pour rester compétitif face aux futurs GB200 NVL72, le tarif horaire d’un H100 devrait tomber à ~**0,98 $/h** selon SemiAnalysis.:contentReference[oaicite:2]{index=2}  
 
 ### Levier : l’optimisation logicielle  
 
+Paradigme émergent : Software-Defined AI Infrastructure
+Face à la commoditisation progressive du matériel, la différenciation se déplace vers la couche logicielle. Les entreprises qui maîtrisent l'optimisation d'inférence bénéficient d'un effet de levier multiplicateur :
+
+- Réduction directe des coûts : -30 à -70% sur la facture cloud
+- Amélioration des SLA : latence réduite de 40%+
+- Scalabilité : +50% de workloads sur la même infrastructure
+
 > Les leviers logiciels (quantization FP8/INT8, *in‑flight batching*, *paged KV cache*, *speculative decoding*) font baisser la facture cloud de **30 → 70 %** ou augmentent de **50 %** la charge utile sur la même machine.:contentReference[oaicite:8]{index=8}  
 
 NVIDIA formalise ces techniques dans **TensorRT‑LLM** : la dernière version double le *throughput* et réduit la latence de plus de 40 % grâce à ses kernels dédiés et son batching dynamique.:contentReference[oaicite:4]{index=4}  
+
+<img width="1770" height="980" alt="leviers-optimisation-inference" src="https://github.com/user-attachments/assets/8c2e25ef-043e-4c72-8bbe-aa17b7539f91" />
+
 
 ### Preuve par la pratique : *Inference‑Optim‑LLM*  
 
