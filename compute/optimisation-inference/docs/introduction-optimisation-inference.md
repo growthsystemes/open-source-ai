@@ -47,26 +47,30 @@ Face à la commoditisation progressive du matériel, la différenciation se dép
 - Réduction directe des coûts : -30 à -70% sur la facture cloud
 - Amélioration des SLA : latence réduite de 40%+
 - Scalabilité : +50% de workloads sur la même infrastructure
+  
 
 > Les leviers logiciels (quantization FP8/INT8, *in‑flight batching*, *paged KV cache*, *speculative decoding*) font baisser la facture cloud de **30 → 70 %** ou augmentent de **50 %** la charge utile sur la même machine.:contentReference[oaicite:8]{index=8}  
 
-NVIDIA formalise ces techniques dans **TensorRT‑LLM** : la dernière version double le *throughput* et réduit la latence de plus de 40 % grâce à ses kernels dédiés et son batching dynamique.:contentReference[oaicite:4]{index=4}  
+NVIDIA formalise ces techniques dans TensorRT‑LLM. La dernière version double le throughput et réduit la latence de plus de 40 % grâce à ses kernels dédiés et son batching dynamique.
 
 <img width="1770" height="980" alt="leviers-optimisation-inference" src="https://github.com/user-attachments/assets/8c2e25ef-043e-4c72-8bbe-aa17b7539f91" />
 
 
-### Preuve par la pratique : *Inference‑Optim‑LLM*  
+### Preuve par la pratique : **tensor-rt-llm** 
 
-Le dépôt <https://github.com/growthsystemes/open-source-ai> fournit un **banc d’essai Dockerisé** qui mesure, à matériel constant, l’écart entre :
+Le dépôt [https://github.com/growthsystemes/open-source-ai](https://github.com/growthsystemes/open-source-ai/tree/main/compute/optimisation-inference/tensor-rt-llm) fournit un banc d’essai Dockerisé qui compare, à matériel constant, une implémentation PyTorch baseline à son équivalent TensorRT‑LLM optimisé.
 
-| Config (RTX 4070) | TPS moyen | Latence | VRAM | Conso | Speed‑up |
-|-------------------|-----------|---------|------|--------|----------|
-| **PyTorch CPU**   | 6,6       | 9,7 s   | —    | —      | 1× |
-| **Baseline GPU (64 T)** | 70 | 0,8 s | 1 513 MB | 30 W | **10×** |
-| **TensorRT‑LLM FP16 (200 T)** | 81 | 2,4 s | 882 MB | 17 W | **12×** |
-| **TensorRT‑LLM + Batch 4 (200 T)** | **101** | **1,8 s** | 882 MB | 18 W | **15×** |
+### benchmarks : TinyLlama‑1.1B Chat
+Pour évaluer l’impact de TensorRT‑LLM sur un modèle compact, nous avons exécuté la même méthodologie sur TinyLlama‑1.1B Chat. Les tests ont été automatisés via un pipeline Docker sans compilation locale.
 
-Ces gains pratiques confirment l’ordre de grandeur théorique et servent de **référence reproductible** pour dimensionner un pipeline avant mise en production.
+| Métrique (RTX 4070) | PyTorch | TensorRT-LLM | Gain |
+|---------------------|---------|--------------|------|
+| Latence moyenne | 627,9 ms | 260,3 ms | 2,41× plus rapide |
+| Débit moyen | 864,4 tok/s | 2 723,2 tok/s | 3,15× plus rapide |
+| Mémoire GPU | 2,60 GB | 2,61 GB | ≈ identique |
+
+Ces mesures, obtenues sur des prompts d’environ 100 tokens et une génération de 200 tokens, démontrent que TensorRT‑LLM reste pertinent même sur des modèles sub‑2B paramètres. Les gains croissent avec la longueur des séquences et la taille du modèle.
+
 
 ### Impact business  
 
