@@ -1,9 +1,0 @@
-Write a comprehensive 500-word essay about the impact of artificial intelligence on modern society, including both benefits and challenges, with specific examples from healthcare, education, and employment sectors.
-
-Explain the complete process of photosynthesis in plants, starting from light absorption through chlorophyll, the Calvin cycle, and energy conversion, and discuss how this process impacts global climate patterns and atmospheric composition.
-
-Describe in detail the theory of quantum mechanics, including wave-particle duality, uncertainty principle, quantum entanglement, and superposition, and explain how these concepts are being applied in modern quantum computing technologies.
-
-Write a detailed analysis of the causes and consequences of World War II, including the political, economic, and social factors that led to the conflict, major battles and turning points, and the long-term impacts on global geopolitics.
-
-Provide a comprehensive explanation of machine learning algorithms, including supervised and unsupervised learning, neural networks, deep learning architectures, and their applications in natural language processing, computer vision, and recommendation systems.
