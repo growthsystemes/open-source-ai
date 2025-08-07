@@ -178,6 +178,9 @@ Cette différence explique pourquoi l'optimisation doit être spécifique à cha
 
 ### 3.3 Le KV-cache : cœur de l'optimisation
 
+Explication du KV-cache : 
+Le KV‑cache est une mémoire tampon que le modèle alimente pendant la phase prefill : pour chaque jeton du prompt, il calcule une paire de tenseurs Key (K) et Value (V) par couche et les conserve au lieu de les recalculer. Lorsque l’on passe à la phase decode, le modèle ne doit plus traiter tout l’historique ; il projette simplement le nouveau jeton en Query (Q) et cherche ses similarités dans les K déjà stockés, puis combine les V correspondantes pour produire le prochain token. On échange ainsi du calcul répété contre une lecture rapide en mémoire : la génération devient beaucoup plus rapide, mais la VRAM consommée croît linéairement avec la longueur du contexte (d’où la nécessité de techniques comme l’attention paginée ou la quantization pour contenir cette empreinte).
+
 ![KV-cache](https://github.com/user-attachments/assets/190474cf-d9c8-44f0-b807-120b520772a1)
 
 Le KV-cache stocke les représentations Key et Value de tous les tokens précédents, évitant leur recalcul à chaque itération. Sans cache, chaque nouveau token nécessiterait de reprocesser toute la séquence précédente.
@@ -191,19 +194,23 @@ Mémoire KV = 2 × num_layers × num_heads × head_dim × sequence_length × bat
 
 ### 3.4 Impact des prompts sur l'utilisation mémoire
 
-La longueur des prompts a un impact direct et proportionnel sur la consommation mémoire :
+![impact-prompt-memoire](https://github.com/user-attachments/assets/51ef2ebf-a46e-49ba-9a07-71881fd56eb2)
 
-![Impact mémoire](https://github.com/user-attachments/assets/8c2e25ef-043e-4c72-8bbe-aa17b7539f91)
+La longueur des prompts a un impact direct et proportionnel sur la consommation mémoire :
 
 - **Prompts courts + génération longue** : Mémoire dominée par la phase decode
 - **Prompts longs + génération courte** : Mémoire dominée par la phase prefill
 - **Optimisation** : Adapter la stratégie selon le profil d'usage
 
-## 4. Leviers d'optimisation TensorRT-LLM
+## 4. Leviers d'optimisation TensorRT-LLM (cumulatifs)
+
+<img width="1979" height="980" alt="gain-impact-optimisation-tensorrt-llm-nvidia" src="https://github.com/user-attachments/assets/fc1025f7-9bfd-4221-94fb-ab46c637240c" />
 
 ### 4.1 Quantization FP8/INT8
 
-La quantization réduit la précision des poids et activations, diminuant drastiquement l'empreinte mémoire :
+La quantization consiste à représenter les poids et activations du réseau dans un format numérique réduit—FP8 (8 bits flottants) ou INT8 (8 bits entiers)—plutôt qu’en FP16 ou FP32. Moins de bits par valeur signifie trois gains majeurs : l’empreinte mémoire chute (environ –50 % en FP8 ; –75 % en INT8), la bande passante mémoire nécessaire diminue d’autant, et les tenseurs plus compacts passent plus facilement dans les caches GPU.
+
+Dans la pratique, un Llama‑2 70 B FP16 qui coûtait 100 unités de budget GPU passe à un indice 38,5 avec la seule quantization FP8, sans perte mesurable de perplexité lorsqu’elle est correctement calibrée.
 
 #### Quantization FP8
 - **Réduction mémoire** : ~50% vs FP16
@@ -219,7 +226,7 @@ La quantization réduit la précision des poids et activations, diminuant drasti
 
 ### 4.2 In-flight Batching
 
-Le batching dynamique optimise l'utilisation GPU en traitant plusieurs requêtes simultanément :
+Les requêtes d’un service LLM arrivent de façon asynchrone et avec des longueurs hétérogènes ; un batching statique impose alors du padding pour égaliser les séquences et attend que la plus longue se termine, dilapidant du calcul et de la latence. TensorRT‑LLM remplace ce schéma par l’in‑flight batching : chaque requête est insérée ou retirée du lot à la milliseconde près, et seule la fenêtre valide de chaque séquence est réellement traitée. L’ordonnanceur maintient ainsi le GPU saturé, tout en supprimant le padding inutile ; la latence par requête suit la courbe « tps — presque batch 1 », tandis que le coût global chute encore de 38,5 à 28,6 sur notre indice de référence.
 
 #### Problématiques du batching traditionnel
 - **Padding** : Gaspillage de calcul sur les séquences courtes
@@ -234,7 +241,7 @@ Le batching dynamique optimise l'utilisation GPU en traitant plusieurs requêtes
 
 ### 4.3 Paged Attention et gestion mémoire
 
-L'attention paginée révolutionne la gestion du KV-cache :
+Dans la conception historique, le KV‑cache de chaque requête est alloué de façon contiguë ; des séquences plus courtes laissent alors des « trous » qui gaspillent de la VRAM, et l’allocation préalable d’un contexte maximal (4 096 ou 8 192 tokens) immobilise plusieurs gigaoctets avant même le premier token généré. Paged Attention segmente au contraire le cache en blocs fixes (par ex. 128 tokens) réutilisables par n’importe quelle requête. À l’exécution, l’allocator ne réserve que le nombre de pages réellement nécessaire, peut les partager lorsqu’un préfixe est commun et les recycle dès qu’une génération se termine. On observe typiquement 60 à 80 % de mémoire libérée par rapport au schéma contigu, ce qui autorise un batch plus large ou l’hébergement de modèles plus volumineux sur la même carte.
 
 #### Problème traditionnel
 - **Allocation contiguë** : Fragmentation mémoire importante
@@ -249,7 +256,7 @@ L'attention paginée révolutionne la gestion du KV-cache :
 
 ### 4.4 Speculative Decoding
 
-Cette technique accélère la génération en prédisant plusieurs tokens simultanément :
+Pour un dialogue long, la génération auto‑régressive devient vite la partie la plus lente : chaque nouveau token attend la validation du précédent. Speculative decoding insère un modèle « draft » (plus petit ou partiellement quantisé) qui propose, en une seule passe GPU, plusieurs tokens candidats. Le modèle principal n’a plus qu’à vérifier ces blocs d’avance ; lorsqu’ils sont corrects, il les accepte en lot, sinon il revient au dernier point valide. Comme la vérification est parallélisable et qu’une large fraction des propositions sont acceptées, le temps passable sur le chemin critique diminue d’un facteur 2 à 3 sans nuire à la qualité—la sortie finale reste strictement celle du modèle haut de gamme. Cette approche démultiplie l’intérêt des autres leviers : plus le KV‑cache est compact (quantization) et mieux paginé, plus la prédiction spéculative se vérifie rapidement.
 
 #### Principe
 1. **Modèle draft** : Génère rapidement plusieurs candidats
