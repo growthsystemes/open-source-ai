@@ -11,7 +11,7 @@
 ## Table des matières
 
 1. [Introduction et contexte économique](#1-introduction-et-contexte-économique)
-2. [Fondamentaux de l'inférence LLM](#2-fondamentaux-de-linférence-llm)
+2. [Phases de l’inférence et tokenisation](#2-phase-de-l'inférence-et-tokenisation)
 3. [Architecture technique des transformers](#3-architecture-technique-des-transformers)
 4. [Leviers d'optimisation TensorRT-LLM](#4-leviers-doptimisation-tensorrt-llm)
 5. [Implémentation pratique et benchmarks](#5-implémentation-pratique-et-benchmarks)
@@ -27,51 +27,105 @@
 
 ### 1.1 L'impératif économique de l'optimisation d'inférence
 
-L'industrie de l'intelligence artificielle fait face à une réalité économique incontournable : **l'inférence représente désormais jusqu'à 90% de la facture IA** contre seulement 10% pour l'entraînement. Cette disproportion s'explique par la nature même des modèles de langage en production : si l'entraînement est un investissement ponctuel, l'inférence est un coût récurrent qui croît avec l'adoption.
+- L’industrialisation des grands modèles de langage (LLM) a inversé le ratio historique : l’inférence représente aujourd’hui 80‑90 % du coût total de vie d’un modèle, l’entraînement n’en pesant plus que 10‑20 %.
+- Les montants engagés sont colossaux : OpenAI anticipe à elle seule 7 G $ de dépenses cumulées (entraînement + inférence) sur l’année 2025, reflet direct de la hausse de trafic généré par ChatGPT, Sora et leurs déclinaisons professionnelles.
 
-Selon [les projections d'OpenAI](https://www.byteplus.com/en/topic/415184), les coûts combinés d'entraînement et d'inférence pourraient atteindre 7 milliards de dollars en 2025, illustrant l'ampleur des enjeux économiques.
+Enjeu : sans optimisation logicielle, l’explosion des appels d’inférence menace directement la marge opérationnelle des applications génératives.
 
-### 1.2 Tension sur les ressources GPU
+### 1.2 Pression sur les GPU : arbitrer coût, disponibilité et performance
 
-La pression économique s'intensifie avec l'évolution du marché des GPU :
+L’offre matérielle reste concentrée autour des H100/H200 de NVIDIA, dont la demande excède encore la production. Le tableau ci‑dessous synthétise les coûts de 8 × H100 en août 2025 :
 
-| Option | Modèle de facturation | Coût horaire pour 8×H100 | Coût annuel 24/7 | Écart vs on-prem |
-|--------|----------------------|-------------------------|------------------|------------------|
-| On-prem (achat) | CAPEX + OPEX fixes | ~1,73 $/GPU·h | ≈121 k$/an | - |
-| Cloud hyperscaler (AWS p5.48xlarge) | On-demand | 31,464 $ | ≈276 k$ | +128% |
-| Bare-metal dédié | Location | 18,4 $ | ≈161 k$ | +33% |
+| Option                                            | Mode de facturation | \$/GPU·h | \$/nœud (8 GPU) | Coût annuel 24/7 | Écart vs on-prem |
+| ------------------------------------------------- | ------------------- | -------- | --------------- | ---------------- | ---------------- |
+| **On-prem** (DGX H100, amort. 3 ans + OPEX ≈15 %) | CAPEX + OPEX fixes  | **≈ 1,8 \$** | 14,4 \$         | ≈ 127 k \$       | — |
+| **Cloud hyperscaler** (AWS p5.48xlarge)           | On-demand           | 3,93 \$  | **31,46 \$**    | 276 k \$         | +117 % ([Amazon Web Services][1]) |
+| **Spécialiste bare-metal** (Vast.ai moyenne)      | Location horaire    | **1,87 \$** | 15,0 \$         | 131 k \$         | +3 % ([ThunderCompute][2]) |
+
 
 Cette disparité de coûts, combinée à la [**tension sur les prix GPU**](https://blog.adyog.com/2025/02/09/the-economics-of-ai-training-and-inference-how-deepseek-broke-the-cost-curve/), fait de l'optimisation logicielle un levier critique de compétitivité.
 
-### 1.3 Le paradigme Software-Defined AI Infrastructure
 
-Face à la commoditisation progressive du matériel, la différenciation se déplace vers la couche logicielle. Les entreprises qui maîtrisent l'optimisation d'inférence bénéficient d'un effet de levier multiplicateur :
+### 1.3 De la compétition matérielle à l’avantage « Software‑Defined »
 
-- **Réduction directe des coûts** : -30 à -70% sur la facture cloud
-- **Amélioration des SLA** : latence réduite de 40%+
-- **Scalabilité** : +50% de workloads sur la même infrastructure
+À mesure que le silicium se commoditise et que les prix s’alignent, la différenciation se déplace vers la couche logicielle :
 
-## 2. Fondamentaux de l'inférence LLM
+| Levier logiciel                                           | Impact financier direct                         |
+| --------------------------------------------------------- | ---------------------------------------------- |
+| **Optimisation TensorRT-LLM** (quantization + batched-KV) | −30 → −70 % sur la facture GPU                 |
+| **Scheduling dynamique** (auto-batching, spéculatif)      | −10 → −25 % supplémentaires                    |
+| **Observabilité FinOps** (cost ­per ­token)               | Jusqu’à −15 % via droitsizing                  |
 
-### 2.1 Comprendre l'inférence
+En combinant ces techniques, les pionniers du Software‑Defined AI Infrastructure constatent :
+- Capacité doublée sur le même rack (latence P95 −40 %) ;
+- Retour sur investissement < 6 mois même sur parcs récents ;
+- Barrière à l’entrée pour les concurrents cantonnés aux réglages par défaut.
 
-L'inférence dans les LLM diffère fondamentalement de l'entraînement. Comme l'explique [ankursnewsletter.com](https://www.ankursnewsletter.com/p/the-real-price-of-ai-pre-training), "l'inférence, c'est comme un diplômé qui travaille quotidiennement dans son emploi. L'objectif n'est plus d'apprendre, mais d'appliquer ce qui a été appris pendant l'entraînement à de nouvelles données d'entrée non vues."
+## 2. Phases de l’inférence et tokenisation 
 
-### 2.2 Phases de l'inférence
+### 2.2 Cycle d’inférence : de la *Prefill* au *Decode*
 
 L'inférence LLM se décompose en deux phases distinctes :
 
-#### Phase 1 : Prefill (Digestion)
-- **Objectif** : Traiter tous les tokens d'entrée en parallèle
-- **Caractéristique** : Opération compute-bound
-- **Optimisation** : Maximiser l'utilisation des cœurs GPU
+| Phase | Rôle fonctionnel | Profil matériel | Verrous principaux | Leviers d’optimisation |
+|-------|------------------|-----------------|--------------------|------------------------|
+| **Prefill** (context-encoding) | Encoder tout le prompt et construire le KV-cache | *Compute-bound* (Tensor Cores saturés) | Débit FLOPS / occupation SM | Chunked prefill, fusion kernels, overlap I/O-compute |
+| **Decode** | Générer les tokens un par un en réutilisant le KV-cache | *Memory-bandwidth-bound* (accès HBM ≫ calcul) | Bande passante HBM, latence cache | Paged attention, in-flight batching, speculative decoding |
 
-#### Phase 2 : Decode (Génération)
-- **Objectif** : Générer les tokens un par un de manière auto-régressive
-- **Caractéristique** : Opération memory-bound
-- **Goulot d'étranglement** : Bande passante mémoire
+#### Zoom technique
 
-![Processus d'inférence LLM](https://github.com/user-attachments/assets/8c2e25ef-043e-4c72-8bbe-aa17b7539f91)
+**Prefill —** Implémente un GEMM matrice × matrice pour chaque couche ; les *4 000 + tensors* d’un **Llama-2 70 B** peuvent atteindre *70 – 80 %* d’occupation GPU avec un batch ad hoc.  
+La mémoire reste modérée : seuls les poids et les activations du prompt transitent.
+
+**Decode —** Le calcul devient un GEMV vecteur × matrice répété *N<sub>tokens</sub> × L<sub>couches</sub> × H<sub>têtes</sub>*. La charge FLOPS chute d’un facteur ≈ 32 vs *Prefill*, mais chaque itération lit/écrit le KV-cache complet.  
+C’est donc la bande passante HBM (≈ 3–4 To/s sur un H100) qui plafonne le débit.
+
+Sur des séquences **2 048 → 4 096 tokens**, jusqu’à *70 %* du temps total se passe à décoder.
+
+#### Overlap et scheduling
+
+Des frameworks récents (TensorRT-LLM 0.8, vLLM 0.4+) superposent le *prefill* d’une requête avec le *decode* d’une autre (hybrid batching) pour lisser l’utilisation GPU et gagner **1,4 – 1,8 ×** de throughput global.
+
+> **À retenir**  
+> • Optimiser *Prefill* revient à pousser le GPU à **100 % d’occupation**.  
+> • Optimiser *Decode* revient à économiser chaque octet lu/écrit dans le **KV-cache**.
+
+---
+
+### 2.3 Tokenisation : première ligne de coûts
+
+#### Granularité
+
+Les tokenizers BPE / SentencePiece segmentent le texte en sous-mots ; la règle « 1 token ≈ 4 caractères » n’est qu’une moyenne.  
+En français, la densité varie de **0,22 token/char** (anglais technique) à **0,32** (texte juridique).
+
+#### Impact sur la mémoire
+
+La taille du KV-cache est *O(batch × séquence)* ; chaque token supplémentaire alourdit la consommation d’environ  
+`2 × L × H × d_head × sizeof(dtype)` octets.  
+
+Sur **Llama-2 7 B FP16** : +1 000 tokens ≈ **500 MB** de VRAM.
+
+#### Latence de (dé)tokenisation
+
+Sur de petits prompts (≤ 128 tokens), la conversion *texte ↔ ids* peut représenter jusqu’à **15 %** de la latence P95.  
+Solution : garder un tokenizer en mémoire partagée, vectoriser les look-ups ou précalculer les prompts récurrents.
+
+#### Bonnes pratiques produit
+
+- **Compresser les prompts :** supprimer blancs superflus, préférer des variables de contexte courtes.  
+- **Mutualiser les préfixes :** même système de consigne pour plusieurs requêtes ? encodez-le une fois, référencez-le via *prefix-caching*.  
+- **Choisir la langue de sortie :** le français/franglais produit souvent **+10 – 15 %** de tokens vs l’anglais ; tenir compte du surcoût dans le pricing par token.
+
+#### Exemple (BPE Llama-2)
+
+~~~text
+Texte  : "Fait croître ma boîte"
+Tokens : ["Fait", " croître", " ma", " boîte"]
+IDs    : [2562, 14925, 4860, 26630]
+~~~
+
+Une paraphrase plus concise — *« Scale ma boîte »* — n’en génère que **3 tokens**, soit **−25 %** de VRAM sur le KV-cache pour ce prompt.
 
 ### 2.3 Tokenisation et représentations
 
