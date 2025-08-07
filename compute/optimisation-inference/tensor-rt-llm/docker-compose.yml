@@ -1,0 +1,136 @@
+# Docker Compose pour TensorRT-LLM Benchmark
+# Suppression de version: obsolète dans Compose moderne
+
+services:
+  tensorrt-llm-benchmark:
+    image: nvcr.io/nvidia/tensorrt-llm/devel:1.0.0rc6
+    container_name: tensorrt_benchmark
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTHONPATH=/workspace
+    volumes:
+      # Montage du projet complet
+      - .:/workspace/host
+      # Persistance des données (modèles, moteurs, résultats)  
+      - ./data:/workspace/host/data
+    working_dir: /workspace/host
+    tty: true
+    stdin_open: true
+    ipc: host
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # Scripts d'aide via docker-compose
+    profiles:
+      - manual
+
+  # Service pour l'exécution automatique complète
+  benchmark-full:
+    extends: tensorrt-llm-benchmark
+    container_name: tensorrt_benchmark_auto
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        set -e
+        echo "🚀 Démarrage du benchmark automatique TensorRT-LLM"
+        echo "=================================================="
+        mkdir -p data/models data/engines data/checkpoints data/results
+        echo "1️⃣  Construction du moteur TensorRT..."
+        bash scripts/build_engine.sh
+        echo "2️⃣  Benchmark PyTorch (référence)..."
+        bash scripts/bench_pytorch.sh
+        echo "3️⃣  Benchmark TensorRT-LLM..."
+        bash scripts/bench_trt.sh
+        echo "4️⃣  Comparaison des résultats..."
+        python3 scripts/compare.py
+        echo "✅ Benchmark terminé! Consultez ./data/results/"
+        echo "📊 Graphiques: benchmark_comparison.png"
+        echo "📋 Rapport: benchmark_comparison_report.json"
+    profiles:
+      - auto
+
+  # Service pour benchmark PyTorch uniquement
+  benchmark-pytorch:
+    extends: tensorrt-llm-benchmark
+    container_name: pytorch_benchmark_only
+    command:
+      - /bin/bash
+      - -c
+      - |
+        set -e
+        mkdir -p data/results
+        echo "🔥 Benchmark PyTorch uniquement..."
+        bash scripts/bench_pytorch.sh
+        echo "✅ Benchmark PyTorch terminé!"
+    profiles:
+      - pytorch-only
+
+  # Service pour benchmark TensorRT uniquement (nécessite un moteur pré-construit)
+  benchmark-tensorrt:
+    extends: tensorrt-llm-benchmark
+    container_name: tensorrt_benchmark_only
+    command:
+      - /bin/bash
+      - -c
+      - |
+        set -e
+        mkdir -p data/results
+        echo "⚡ Benchmark TensorRT-LLM uniquement..."
+        if [ ! -d "data/engines/tinyllama" ]; then
+          echo "❌ Moteur TensorRT non trouvé. Exécutez d'abord build-engine."
+          exit 1
+        fi
+        bash scripts/bench_trt.sh
+        echo "✅ Benchmark TensorRT terminé!"
+    profiles:
+      - tensorrt-only
+
+  # Service pour construire le moteur uniquement
+  build-engine:
+    extends: tensorrt-llm-benchmark
+    container_name: tensorrt_build_engine
+    command:
+      - /bin/bash
+      - -c
+      - |
+        set -e
+        echo "🔧 Construction du moteur TensorRT-LLM..."
+        mkdir -p data/models data/engines data/checkpoints
+        bash scripts/build_engine.sh
+        echo "✅ Moteur construit!"
+    profiles:
+      - build-only
+
+  # Service pour la comparaison uniquement
+  compare-results:
+    extends: tensorrt-llm-benchmark
+    container_name: tensorrt_compare
+    command:
+      - /bin/bash
+      - -c
+      - |
+        set -e
+        echo "📊 Comparaison des résultats..."
+        if [ ! -f "data/results/pytorch_benchmark.json" ] || [ ! -f "data/results/tensorrt_benchmark.json" ]; then
+          echo "❌ Fichiers de benchmark manquants. Exécutez d'abord les benchmarks."
+          exit 1
+        fi
+        python3 scripts/compare.py
+        echo "✅ Comparaison terminée!"
+    profiles:
+      - compare-only
+
+volumes:
+  models-data:
+  engines-data:
+  checkpoints-data:
+  results-data:
