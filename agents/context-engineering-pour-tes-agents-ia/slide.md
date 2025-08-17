@@ -1,31 +1,4 @@
 ---
-# You can also start simply with 'default'
-theme: default
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: black
-# some information about your slides (markdown enabled)
-title: Context Engineering pour les Agents IA
-info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
-# apply unocss classes to the current slide
-class: text-center
-
-drawings:
-  persist: false
-# slide transition: https://sli.dev/guide/animations.html#slide-transitions
-transition: slide-left
-# enable MDC Syntax: https://sli.dev/features/mdc
-mdc: true
-# open graph
-seoMeta:
-  # By default, Slidev will use ./og-image.png if it exists,
-  # or generate one from the first slide if not found.
-  ogImage: auto
-  # ogImage: https://cover.sli.dev
----
-
 # Context Engineering pour tes Agents IA
 
 Les stratégies à adopter pour construire des Agents IA robustes
@@ -74,17 +47,6 @@ Les Agents IA pour interagir avec leurs environnement ont besoin de contextes su
 You can have `style` tag in markdown to override the style for the current page.
 Learn more: https://sli.dev/features/slide-scope-style
 -->
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 <!--
 Here is another comment.
@@ -136,17 +98,6 @@ Here is another comment.
 
 </div>
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 <div grid="~ cols-2 gap-2">
@@ -168,16 +119,6 @@ strong {
 
 </div>
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 ---
 
@@ -194,17 +135,6 @@ strong {
 ### 4. **Isoler le contexte** : _**Séparer** pour aider l'agent sur la tâche_
 
 </div>
-
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 ---
 
@@ -248,17 +178,6 @@ Pour palier à ce problème on peut mettre un **objet d'état** (runtime) ou un 
 
 </div>
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 # Selection de contexte
@@ -288,17 +207,6 @@ strong {
 
 </div>
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 # Tableau des différents type de mémoires
@@ -315,26 +223,6 @@ strong {
 | **Procédurale** | Instructions      | Instint ou la motricité        | Le Système prompt de l'agent |
 
 </div>
-
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-
-table {
-  table-layout: fixed; /* ou fixed si tu veux des colonnes de largeur fixe */
-  width: 100; /* rétrécit le tableau au contenu */
-}
-
-table th, table td {
-  padding: 20px 25px; /* réduit l’espace intérieur */
-}
-</style>
 
 ---
 
@@ -391,17 +279,6 @@ table th, table td {
 
 </div>
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 # **Isolation** du contexte
@@ -438,17 +315,6 @@ strong {
 
 </div>
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 # **Contexte Engineering** et **Langgraph**
@@ -456,17 +322,6 @@ strong {
 ## Tracing + Evaluation
 
 - [Get started with LangSmith](https://docs.smith.langchain.com/)
-
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 ---
 
@@ -480,17 +335,6 @@ strong {
 
 - **Long-term memory** pour persister le contexte entre plusieurs sessions
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 # **Selection** dans Langgraph
@@ -503,17 +347,6 @@ strong {
 
 - [**Agentic RAG**](https://blog.langchain.com/agentic-rag-with-langgraph/)
 
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 ---
 
 # **Compression** dans Langgraph
@@ -524,17 +357,6 @@ strong {
 - La framework permet de gérer facilement et définir la logique dans chacun des noeuds (Low-Level)
   Post-procession tool execution : [**langchain-ai/open-deep-research**](https://github.com/langchain-ai/open_deep_research)
   [**utils.py**](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/utils.py)
-
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 ---
 
@@ -555,16 +377,5 @@ strong {
 ## **State** (Etat)
 
 - [**State object** : Overview Define graph schema](https://blog.langchain.com/langgraph/)
-
-<style>
-strong {
-  background-color: #2B90B6;
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 ---
