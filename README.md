@@ -50,3 +50,10 @@ pip install -r requirements.txt         # ou `poetry install`
 
 # 3. Lancer les tests unitaires (optionnel)
 pytest -q
+```
+
+## Nos autres ressources  
+Communauté IA : https://www.skool.com/ai-builder-2894/about<br>
+Youtube Quentin : https://www.youtube.com/@quentingavila<br>
+Youtube Benoit : https://www.youtube.com/@benoitferrere
+

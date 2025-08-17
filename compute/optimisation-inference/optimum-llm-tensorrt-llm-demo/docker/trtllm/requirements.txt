@@ -1,8 +1,0 @@
-# Dépendances pour l'environnement TensorRT-LLM
-einops
-tqdm
-numpy
-huggingface-hub
-typer
-rich
-pynvml
