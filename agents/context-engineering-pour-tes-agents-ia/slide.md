@@ -94,12 +94,14 @@ Here is another comment.
 
 <div grid="~ rows-2 gap-0.5 items-start">
 
+### Les différentes situations ou le contexte se rate
+
 - #### **Context Poisoning** : Quand une hallucination rentre dans le contexte
 - #### **Context Distraction** : Quand le contexte dépasse l'entrainement
 - #### **Context Confusion** : Quand du contexte superflue influence la réponse
 - #### **Context Clash** : Quand des parties du contexte sont en désaccord
 
-> ### Context Engineering devient **critique** quand on **construit** des agents
+> ### Le Context Engineering devient **critique** quand on **construit** des agents
 
 </div>
 
@@ -114,7 +116,7 @@ Here is another comment.
 
 ### 1. **Ecriture du contexte** : _**Sauvegarder** du contexte en dehors de **la fenetre** du LLM pour aider l'agent à faire la tâche._
 
-### 2. **Selectionne le contexte** : _**Envoyer** dans la fenêtre de contexte du LLM_
+### 2. **Selectionne le contexte** : _**Envoyer** dans la fenêtre de contexte du LLM uniquement les informations pertinentes pour la tâche_
 
 ### 3. **Compresser le contexte** : _Retenir uniquement les **tokens/informations** requises pour la tâche_
 
@@ -128,6 +130,8 @@ Here is another comment.
 
 > **Sauvegarder** du contexte en dehors de **la fenetre** du LLM pour aider l'agent à faire la tâche.
 
+## Comparaison avec notre manière de raisonner (humain) sur une tâche
+
 Les humains résouent des tâches, en prenant des notes et en se rappelant de choses pour le futur liés à la tâche.
 
 1. **Notes** ---> Bloc-notes (ScratchPad)
@@ -139,11 +143,11 @@ Les humains résouent des tâches, en prenant des notes et en se rappelant de ch
 
 <div>
 
-## Bloc-notes (ScratchPad)
+## Méthode de Bloc-notes (ScratchPad)
 
 > Concept de de **persister** l'information pendant qu'un agent réalise une tâche
 
-Exemples [Anthropic multi-agent researcher](youtube.com) :
+Exemples [Anthropic multi-agent researcher](https://www.anthropic.com/engineering/multi-agent-research-system) :
 
 > _L'agent LeadResearcher commence par penser à l'approche and **sauvegarde** le plan dans sa **Mémoire** pour persister le context, si la **fenêtre de contexte** dépasse 200k tokens il sera tronqué et il est important de retenir le plan._
 
@@ -153,7 +157,7 @@ Pour palier à ce problème on peut mettre un **objet d'état** (runtime) ou un 
 
 <div>
 
-## Mémoire
+## Méthode de Mémoire
 
 1. **Generative Agents** synthétisent la mémoire des collections des feedback des anciens agents
 2. **ChaGPT**, **Cursor**, **Windsurf** générent automatiquement leurs mémoires.
@@ -166,7 +170,7 @@ Pour palier à ce problème on peut mettre un **objet d'état** (runtime) ou un 
 
 ---
 
-# Selection de contexte
+# Sélection de contexte
 
 > #### _**Envoyer** dans la fenêtre de contexte du LLM du contexte qui **aide l'agent à réaliser la tâche**_
 
@@ -233,7 +237,7 @@ Pour palier à ce problème on peut mettre un **objet d'état** (runtime) ou un 
 
 ---
 
-# Synthese/Compression du contexte
+# Synthèse/Compression du contexte
 
 > **Retenir** uniquement les **tokens/informations** requises pour la tâche
 
