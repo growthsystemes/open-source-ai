@@ -2,8 +2,6 @@
 
 # [Context Engineering pour tes Agents IA](https://youtu.be/53oFRKAOeYI?si=UQF6rc7fs3L0ih0F)
 
-# **Les stratégies à adopter pour construire des Agents IA robustes**
-
 </div>
 
 <a href="[https://www.skool.com/ai-builder-2894/about](https://youtu.be/53oFRKAOeYI?si=UQF6rc7fs3L0ih0F)" target="_blank">
