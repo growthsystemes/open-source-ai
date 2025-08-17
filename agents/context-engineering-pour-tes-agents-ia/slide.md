@@ -94,7 +94,7 @@ Here is another comment.
 
 <div grid="~ rows-2 gap-0.5 items-start">
 
-### Les différentes situations ou le contexte se rate
+### Les différentes situations où le contexte rate
 
 - #### **Context Poisoning** : Quand une hallucination rentre dans le contexte
 - #### **Context Distraction** : Quand le contexte dépasse l'entrainement
