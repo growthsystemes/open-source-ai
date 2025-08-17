@@ -1,10 +1,8 @@
-# Context Engineering pour tes Agents IA
-
-Les stratégies à adopter pour construire des Agents IA robustes
-
 <div class="flex justify-center">
 
 # [Context Engineering pour tes Agents IA](https://youtu.be/53oFRKAOeYI?si=UQF6rc7fs3L0ih0F)
+
+# **Les stratégies à adopter pour construire des Agents IA robustes**
 
 </div>
 
