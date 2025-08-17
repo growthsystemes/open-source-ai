@@ -25,11 +25,11 @@ The last comment block of each slide will be treated as slide notes. It will be 
 
 </div>
 
-<div class="flex justify-center">
-
+<a href="https://www.skool.com/ai-builder-2894/about" target="_blank">
 <img src="./assets/skool.png"
      alt="f"
      class="rounded-xl shadow-lg border border-gray-600 w-145 hover:scale-110 transition-transform duration-300" />
+</a>
 
 </div>
 
