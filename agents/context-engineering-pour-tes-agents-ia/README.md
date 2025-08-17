@@ -1,5 +1,3 @@
-<img width="1269" height="773" alt="image" src="https://github.com/user-attachments/assets/13df1b29-6989-46d4-979c-4c641e296e1b" />---
-
 # Context Engineering pour tes Agents IA
 
 Les stratégies à adopter pour construire des Agents IA robustes
@@ -28,7 +26,7 @@ Les stratégies à adopter pour construire des Agents IA robustes
 </div>
 
 <a href="https://www.skool.com/ai-builder-2894/about" target="_blank">
-<img src="./assets/skool.png"
+<img src="./assets/skool-gratuit-last.png"
      alt="f"
      class="rounded-xl shadow-lg border border-gray-600 w-145 hover:scale-110 transition-transform duration-300" />
 </a>
