@@ -23,7 +23,7 @@ Les stratégies à adopter pour construire des Agents IA robustes
 
 # Context Engineering?
 
-Les Agents IA pour interagir avec leurs environnement ont besoin de contextes sur celui-ci pour performer la tache donnée.
+Les Agents IA pour interagir avec leurs environnement ont besoin de contextes sur celui-ci pour performer sur la tâche donnée.
 
 ## **Cest quoi ?**
 
