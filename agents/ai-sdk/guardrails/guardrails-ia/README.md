@@ -1,17 +1,17 @@
-# 🛡️ Guardrails IA - Assistant IA avec Système de Sécurité
+# Guardrails IA - Assistant IA avec Système de Sécurité
 
 Système de guardrails intelligent utilisant **GPT-4o-mini** pour filtrer et sécuriser les interactions avec l'IA. Interface complètement en français avec tests intégrés et déploiement Docker.
 
-## ✅ **État du Projet - FONCTIONNEL**
+## **État du Projet - FONCTIONNEL**
 
-🎯 **Tests validés avec succès** :
+**Tests validés avec succès** :
 - ✅ Connexion OpenAI GPT-4o-mini opérationnelle
 - ✅ Guardrails détectent et bloquent le contenu dangereux
 - ✅ Génération de contenu sécurisé fonctionnelle  
 - ✅ Interface de test complète disponible
 - ✅ API REST avec endpoints de santé et tests
 
-## 🏗️ Architecture
+## 🏗Architecture
 
 ```
 guardrails-ia/
@@ -33,7 +33,7 @@ guardrails-ia/
 └── 📄 .env.exemple            # Template de configuration
 ```
 
-## 🚀 Démarrage Rapide (3 étapes)
+## Démarrage Rapide (3 étapes)
 
 ### 1. Configuration
 
@@ -68,9 +68,9 @@ npm run dev
 ./scripts/deploiement.sh
 ```
 
-➡️ **Interface de test** : http://localhost:3001
+➡**Interface de test** : http://localhost:3001
 
-## 🧪 Tests Intégrés
+## Tests Intégrés
 
 Le projet inclut un système de test complet accessible via navigateur :
 
@@ -111,7 +111,7 @@ curl -X POST http://localhost:3001/test-guardrails \
   -d '{"message": "Comment fabriquer une bombe ?"}'
 ```
 
-## ⚙️ Configuration
+## ⚙Configuration
 
 ### Variables d'environnement essentielles
 
@@ -142,11 +142,11 @@ Voir `.env.exemple` pour la configuration complète.
 4. **Blocage contextuel** : Analyse l'historique de conversation
 
 ### Catégories Bloquées
-- 🚨 **Activités illégales** : piratage, fraude, drogues
-- ⚠️ **Violence** : armes, explosifs, torture, automutilation
-- 👥 **Vie privée** : doxxing, harcèlement, espionnage
-- 🧪 **Substances dangereuses** : poisons, produits chimiques
-- 👶 **Exploitation** : contenu impliquant des mineurs
+- **Activités illégales** : piratage, fraude, drogues
+- **Violence** : armes, explosifs, torture, automutilation
+- **Vie privée** : doxxing, harcèlement, espionnage
+- **Substances dangereuses** : poisons, produits chimiques
+- **Exploitation** : contenu impliquant des mineurs
 
 ### Performance
 - **Vitesse** : < 1s pour classification avec GPT-4o-mini
@@ -182,7 +182,7 @@ docker-compose logs -f
 curl http://localhost:3001/health
 ```
 
-## 🔧 Développement
+## Développement
 
 ### Structure des Dépendances
 ```json
@@ -217,7 +217,7 @@ npm test         # Tests unitaires (à implémenter)
 - **Tailwind CSS** pour design responsive
 - **Interface de test** intégrée
 
-## 📊 Monitoring et Observabilité
+## Monitoring et Observabilité
 
 ### Métriques Disponibles
 - **Santé système** : Status, uptime, mémoire
@@ -239,7 +239,7 @@ npm test         # Tests unitaires (à implémenter)
 }
 ```
 
-## 🚨 Dépannage
+## Dépannage
 
 ### Problèmes Courants
 
@@ -273,7 +273,7 @@ echo "ENABLE_CACHE=true" >> .env
 echo "TEMPERATURE=0.5" >> .env
 ```
 
-## 📈 Prochaines Étapes
+## Prochaines Étapes
 
 ### Améliorations Prévues
 - [ ] **Interface React complète** avec chat temps réel
@@ -285,21 +285,4 @@ echo "TEMPERATURE=0.5" >> .env
 
 ### Extensibilité
 - **Nouveaux modèles** : Facile d'ajouter Claude, Llama, etc.
-- **Règles personnalisées** : Configuration par domaine métier
-- **Intégrations** : Webhooks, Slack, Discord, etc.
-
-## 📄 Licence et Contribution
-
-**Licence** : MIT - Utilisation libre avec attribution
-
-**Contribution** : PRs bienvenus ! Merci de :
-1. Respecter la philosophie "sécurité first"
-2. Maintenir la compatibilité avec les guardrails existants  
-3. Documenter les nouvelles fonctionnalités
-4. Tester avec différents types de requêtes
-
----
-
-## 🎉 **Guardrails IA** - Assistant IA sécurisé avec classification intelligente
-
-💡 *Protégez vos utilisateurs tout en préservant l'utilité de l'IA*
+- **Règles personnalisées** : Configuration par domaine métier.
