@@ -1,0 +1,105 @@
+# Docker Compose pour Guardrails IA
+# Configuration pour déploiement léger avec monitoring basique
+version: '3.8'
+
+services:
+  # Service principal de l'application
+  guardrails-ia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Arguments de build pour optimiser selon l'environnement
+      args:
+        - NODE_ENV=production
+    
+    # Nom du conteneur pour faciliter la gestion
+    container_name: guardrails-ia-app
+    
+    # Configuration des ports
+    ports:
+      - "${HOST_PORT:-3001}:3001"
+    
+    # Variables d'environnement
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - TZ=Europe/Paris
+      # Configuration pour les logs structurés
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+    
+    # Configuration des ressources pour éviter la surcharge
+    deploy:
+      resources:
+        limits:
+          # Limite de RAM pour éviter les problèmes de mémoire
+          memory: 512M
+          # Limite CPU pour éviter la monopolisation
+          cpus: '0.5'
+        reservations:
+          # Ressources minimales garanties
+          memory: 256M
+          cpus: '0.25'
+    
+    # Configuration de redémarrage automatique
+    restart: unless-stopped
+    
+    # Vérification de santé personnalisée
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    
+    # Configuration des logs pour éviter l'accumulation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Labels pour l'organisation et le monitoring
+    labels:
+      - "com.explainer.service=main"
+      - "com.explainer.version=v3"
+      - "com.explainer.description=Assistant IA avec guardrails"
+      
+  # Service de monitoring simple (optionnel)
+  monitoring:
+    image: prom/node-exporter:latest
+    container_name: guardrails-ia-monitoring
+    
+    # Ports pour les métriques
+    ports:
+      - "${MONITORING_PORT:-9100}:9100"
+    
+    # Configuration des ressources minimales
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: '0.1'
+    
+    restart: unless-stopped
+    
+    # Profil pour activer uniquement si nécessaire
+    profiles:
+      - monitoring
+    
+    labels:
+      - "com.explainer.service=monitoring"
+      - "com.explainer.version=v3"
+
+# Configuration réseau pour l'isolation
+networks:
+  default:
+    name: guardrails-ia-network
+    driver: bridge
+
+# Configuration des volumes pour la persistance (si nécessaire)
+volumes:
+  app-logs:
+    driver: local
+    labels:
+      - "com.explainer.volume=logs"

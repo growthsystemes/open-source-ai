@@ -1,0 +1,84 @@
+# .dockerignore pour Guardrails IA
+# Optimisation de la taille de l'image et sécurisation
+
+# Dossiers de dépendances (réinstallées dans le conteneur)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers de build et cache
+dist/
+build/
+.cache/
+.temp/
+*.tsbuildinfo
+
+# Fichiers d'environnement et secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.key
+*.pem
+*.p12
+
+# Outils de développement
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fichiers de système
+.DS_Store
+Thumbs.db
+.git/
+.gitignore
+
+# Documentation et fichiers README
+README.md
+CHANGELOG.md
+LICENSE
+docs/
+
+# Fichiers de test
+__tests__/
+test/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+coverage/
+.nyc_output/
+
+# Configuration de linting
+.eslintrc*
+.prettier*
+.stylelint*
+
+# Fichiers de logs
+logs/
+*.log
+
+# Fichiers temporaires
+tmp/
+temp/
+
+# Fichiers Docker (éviter la récursion)
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Autres fichiers de développement
+.editorconfig
+.gitattributes
+.github/
+
+# Fichiers spécifiques au projet
+# Anciennes versions
+explainer-v2/
+explainer-v3/
+screenshots/
+examples/
